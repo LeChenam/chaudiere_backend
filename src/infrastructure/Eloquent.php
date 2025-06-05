@@ -7,7 +7,7 @@
  * @author: canals
  */
 
-namespace chaudiere\core\infrastructure;
+namespace chaudiere\infrastructure;
 use Illuminate\Database\Capsule\Manager as DB ;
 
 class Eloquent
