@@ -1,5 +1,5 @@
 networks:
-  giftbox.net:
+  chaudiere.net:
     driver: bridge
 
 services:
@@ -12,7 +12,7 @@ services:
       - ./src:/var/www/src
     working_dir: /var/www/src
     networks:
-      - giftbox.net
+      - chaudiere.net
     command: bash -c "composer update && php -S 0.0.0.0:80 -t /var/www/html"
     depends_on:
       - mariadb
@@ -22,7 +22,7 @@ services:
     ports:
       - "12001:8080"
     networks:
-      - giftbox.net
+      - chaudiere.net
 
   mariadb:
     image: mariadb:11.4.5-ubi9
@@ -34,6 +34,6 @@ services:
     volumes:
         - ./sql:/docker-entrypoint-initdb.d
     networks:
-      giftbox.net:
+      chaudiere.net:
         aliases:
           - sql.db
