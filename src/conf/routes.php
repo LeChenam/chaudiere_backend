@@ -1,5 +1,4 @@
 <?php
-
 use chaudiere\api\actions\CategoriesAction;
 use chaudiere\api\actions\EvenementsAction;
 use chaudiere\api\actions\EventsByCategorieAction;
