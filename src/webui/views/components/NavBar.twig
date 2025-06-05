@@ -1,0 +1,91 @@
+<nav class="bg-white border-b border-gray-200 px-4 py-3 shadow-md">
+    <div class="flex items-center justify-between">
+        <ul class="hidden md:flex space-x-6 text-gray-700 font-medium">
+            <li class="hover:text-blue-500"><a href="{{ url_for('home') }}">Accueil</a></li>
+        </ul>
+        <div class="flex items-center space-x-4">
+            <!-- Menu Profil -->
+            <div class="relative">
+                <button id="profileMenuButton" class="flex items-center space-x-2 text-gray-700 hover:text-blue-500 focus:outline-none">
+                    <i class="fa fa-user-circle fa-2x"></i>
+                </button>
+                <div id="profileDropdown" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg hidden z-10">
+                    <p class="block px-4 py-2 bg-blue-500 text-black">{% if userSession is defined %}{{ userSession.username }}{% else %}Non connecté{% endif %}</p>
+                    <div class="block px-4 py-2 w-full text-left hover:bg-gray-100 text-gray-700">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<!-- Overlay pour cliquer à l'extérieur -->
+<div id="overlay" class="fixed inset-0 bg-black opacity-30 z-40 hidden"></div>
+
+<!-- Styles -->
+<style>
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background-color: rgba(100, 116, 139, 0.6); /* slate-500 */
+        border-radius: 9999px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(100, 116, 139, 0.9);
+    }
+
+    /* Firefox support */
+    .scrollbar-thin {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(100, 116, 139, 0.6) transparent;
+    }
+</style>
+
+<!-- JavaScript pour la box -->
+<script>
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    const openBtn = document.getElementById('toggleDrawer');
+    const closeBtn = document.getElementById('closeDrawer');
+
+    openBtn.addEventListener('click', () => {
+        drawer.classList.remove('translate-x-full');
+        overlay.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+        drawer.classList.add('translate-x-full');
+        overlay.classList.add('hidden');
+    });
+
+    overlay.addEventListener('click', () => {
+        drawer.classList.add('translate-x-full');
+        overlay.classList.add('hidden');
+    });
+</script>
+
+<!-- JavaScript pour le user -->
+<script>
+    const profileBtn = document.getElementById('profileMenuButton');
+    const dropdown = document.getElementById('profileDropdown');
+
+    profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
+</script>
