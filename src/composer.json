@@ -14,8 +14,8 @@
 	},
 	"autoload": {
 		"psr-4" : {
-			"chaudiere\\":"./",
-			"chaudiere\\appli\\api\\": "./api/"
+			"chaudiere\\appli\\api\\": "./api/",
+			"chaudiere\\appli\\core\\": "./core/"
 		}
 	}
 }
