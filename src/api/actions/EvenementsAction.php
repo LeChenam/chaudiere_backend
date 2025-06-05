@@ -1,9 +1,9 @@
 <?php
 namespace chaudiere\api\actions;
 
-use gift\appli\core\application\usecases\Collection;
-use gift\appli\core\application\usecases\CollectionInterface;
-use gift\appli\core\domain\exceptions\EntityNotFoundException;
+use chaudiere\appli\core\application\usecases\Collection;
+use chaudiere\appli\core\application\usecases\CollectionInterface;
+use chaudiere\appli\core\domain\exceptions\EntityNotFoundException;
 use Slim\Exception\HttpNotFoundException;
 
 class EvenementsAction {
