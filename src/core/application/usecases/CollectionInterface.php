@@ -1,5 +1,5 @@
 <?php
-namespace chaudiere\appli\core\application\usecases;
+namespace chaudiere\core\application\usecases;
 
 Interface CollectionInterface{
     public function getCategories(): array;

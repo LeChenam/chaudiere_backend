@@ -1,6 +1,6 @@
 <?php
 
-namespace chaudiere\appli\core\domain\exceptions;
+namespace chaudiere\core\domain\exceptions;
 
 class EntityNotFoundException extends \Exception
 {
