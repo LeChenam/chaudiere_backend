@@ -5,6 +5,7 @@ use \Illuminate\Database\QueryException;
 use chaudiere\appli\core\application\exceptions\ExceptionDatabase;
 use chaudiere\core\domain\entities\Categorie;
 use chaudiere\core\domain\entities\Evenement;
+use chaudiere\appli\core\application\usecases\CollectionInterface;
 use chaudiere\appli\core\domain\exceptions\EntityNotFoundException;
 
 class Collection implements CollectionInterface
