@@ -5,35 +5,47 @@
 {% block content %}
     <h1>Créer un Événement</h1>
 
-    <form method="get" action="/event/create">
-        <label for="titre">Nom de l'Événement :</label>
-        <input type="text" id="titre" name="titre" required>
+    <form method="get" action="{{ url_for('createEvent') }}">
+        <ul>
+            <li>
+            <label for="titre">Nom de l'Événement :</label>
+            <input type="text" id="titre" name="titre" required>
+            </li>
 
-        <label for="description">Description :</label>
-        <textarea id="description" name="description" required></textarea>
+            <li>
+            <label for="description">Description :</label>
+            <textarea id="description" name="description" required></textarea>
+            </li>
 
-        <label for="tarif">Tarif :</label>
-        <input type="number" id="tarif" name="tarif" required>
+            <li>
+            <label for="tarif">Tarif :</label>
+            <input type="number" id="tarif" name="tarif" required>
+            </li>
 
-        <label for="date_debut">Date :</label>
-        <input type="date" id="date_debut" name="date_debut" required>
+            <li>
+            <label for="date_debut">Date :</label>
+            <input type="date" id="date_debut" name="date_debut" required>
 
-        <label for="date_fin">Date :</label>
-        <input type="date" id="date_fin" name="date_fin" required>
+            <label for="date_fin">Date :</label>
+            <input type="date" id="date_fin" name="date_fin" required>
 
-        <label for="horaire">Horaire :</label>
-        <input type="time" id="horaire" name="horaire" required>
+            <label for="horaire">Horaire :</label>
+            <input type="time" id="horaire" name="horaire" required>
+            </li>
 
-        <label for="image">Image :</label>
-        <input type="file" id="image" name="image" required>
+            <li>
+            <label for="image">Image :</label>
+            <input type="file" id="image" name="image" required>
 
-        <label for="categorie">Categorie :</label>
-        <select name="categorie" id="categorie">
-            {% for categorie in categories %}
-                <option value="{{ categorie.id }}">{{ categorie.nom }}</option>
-            {% endfor %}
-        </select>
+            <label for="categorie">Categorie :</label>
+            <select name="categorie" id="categorie">
+                {% for categorie in categories %}
+                    <option value="{{ categorie.id }}">{{ categorie.libelle }}</option>
+                {% endfor %}
+            </select>
+            </li>
 
-        <button type="submit">Créer</button>
+            <li><button type="submit">Créer</button></li>
+        </ul>
     </form>
 {% endblock %}
