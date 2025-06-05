@@ -1,0 +1,39 @@
+networks:
+  giftbox.net:
+    driver: bridge
+
+services:
+  web:
+    image: operrin/php:8.4.6
+    ports:
+      - "12000:80"
+    volumes :
+      - ./public:/var/www/html
+      - ./src:/var/www/src
+    working_dir: /var/www/src
+    networks:
+      - giftbox.net
+    command: bash -c "composer update && php -S 0.0.0.0:80 -t /var/www/html"
+    depends_on:
+      - mariadb
+
+  adminer:
+    image: adminer:5.2.1
+    ports:
+      - "12001:8080"
+    networks:
+      - giftbox.net
+
+  mariadb:
+    image: mariadb:11.4.5-ubi9
+    environment :
+      - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
+      - MARIADB_DATABASE=${DB_NAME}
+    ports:
+      - "3306:3306"
+    volumes:
+        - ./sql:/docker-entrypoint-initdb.d
+    networks:
+      giftbox.net:
+        aliases:
+          - sql.db
