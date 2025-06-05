@@ -1,5 +1,5 @@
 <?php
-namespace chaudiere\appli\api\actions;
+namespace chaudiere\api\actions;
 
 use gift\appli\core\application\usecases\Collection;
 use gift\appli\core\application\usecases\CollectionInterface;

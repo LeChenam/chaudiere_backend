@@ -14,7 +14,7 @@
 	},
 	"autoload": {
 		"psr-4" : {
-			"Chaudiere\\": "./src/"
+			"chaudiere\\": "./src/"
 		}
 	}
 }
