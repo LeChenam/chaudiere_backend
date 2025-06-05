@@ -6,7 +6,7 @@ services:
   web:
     image: operrin/php:8.4.6
     ports:
-      - "12000:80"
+      - "13000:80"
     volumes :
       - ./public:/var/www/html
       - ./src:/var/www/src
@@ -20,7 +20,7 @@ services:
   adminer:
     image: adminer:5.2.1
     ports:
-      - "12001:8080"
+      - "13001:8080"
     networks:
       - chaudiere.net
 
@@ -30,7 +30,7 @@ services:
       - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
       - MARIADB_DATABASE=${DB_NAME}
     ports:
-      - "3306:3306"
+      - "13006:3306"
     volumes:
         - ./sql:/docker-entrypoint-initdb.d
     networks:
