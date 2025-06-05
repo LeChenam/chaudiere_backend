@@ -3,21 +3,24 @@
 
 namespace chaudiere\core\application\usecases;
 
+use chaudiere\core\application\exceptions\ExceptionDatabase;
 use chaudiere\core\domain\entities\Evenement;
+use Illuminate\Contracts\Queue\EntityNotFoundException;
 
 class EventManagement implements EventManagementInterface
 {
-    public function createEvent($titre, $description, $tarif, $dateDebut, $dateFin, $horaire, $publie, $image, $categorie, $createur, $dateCreation)
+    public function createEvent($titre, $description, $tarif, $dateDebut, $dateFin, $horaire, $image, $categorie, $createur, $dateCreation)
     {
         try {
             $event = new Evenement();
+            $event->id = Evenement::all()->max('id') + 1;
             $event->titre = $titre;
             $event->description_md = $description;
             $event->tarif = $tarif;
             $event->date_debut = $dateDebut;
             $event->date_fin = $dateFin;
             $event->horaire = $horaire;
-            $event->publie = $publie;
+            $event->publie = false;
             $event->image_url = $image;
             $event->categorie()->associate($categorie);
             $event->createur()->associate($createur);
@@ -30,4 +33,5 @@ class EventManagement implements EventManagementInterface
             throw new ExceptionDatabase("Erreur de requête : " . $e->getMessage());
         }
     }
+
 }
