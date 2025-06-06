@@ -3,3 +3,4 @@
 *.dist
 composer.lock
 vendor
+/public/static/images/
