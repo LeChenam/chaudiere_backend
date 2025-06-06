@@ -19,20 +19,35 @@ class EvenementsAction {
         $queryParams = $request->getQueryParams();
         $id = $args['id'] ?? null;
         $periode = $queryParams['periode'] ?? null;
+        $rangement = $queryParams['sort'] ?? null;
 
         if ($periode == null) {
             if ($id == null) {
-                try {
-                    $evenements = $this->collection->getEvenements();
-                } catch (EntityNotFoundException $e) {
-                    throw new HttpNotFoundException($request, $e->getMessage());
-                }
+                if ($rangement == null){
+                    try {
+                        $evenements = $this->collection->getEvenements();
+                    } catch (EntityNotFoundException $e) {
+                        throw new HttpNotFoundException($request, $e->getMessage());
+                    }
 
-                //Transformation des données
-                $data = [ 'type' => 'collection',
-                    'count' => count($evenements),
-                    'evenements' => $evenements ];
-                $response->getBody()->write(json_encode($data));
+                    //Transformation des données
+                    $data = [ 'type' => 'collection',
+                        'count' => count($evenements),
+                        'evenements' => $evenements ];
+                    $response->getBody()->write(json_encode($data));
+                } else{
+                    try {
+                        $evenements = $this->collection->getEvenementsRanges($rangement);
+                    } catch (EntityNotFoundException $e) {
+                        throw new HttpNotFoundException($request, $e->getMessage());
+                    }
+
+                    //Transformation des données
+                    $data = [ 'type' => 'collection',
+                        'count' => count($evenements),
+                        'evenements' => $evenements ];
+                    $response->getBody()->write(json_encode($data));
+                    }
 
             } else{
                 //On tente de récupérer les catégories depuis le modèle
