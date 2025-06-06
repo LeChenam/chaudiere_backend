@@ -9,11 +9,10 @@ use Illuminate\Contracts\Queue\EntityNotFoundException;
 
 class EventManagement implements EventManagementInterface
 {
-    public function createEvent($titre, $description, $tarif, $dateDebut, $dateFin, $horaire, $image, $categorie, $createur, $dateCreation)
+    public function createEvent($titre, $description, $tarif, $dateDebut, $dateFin, $horaire, $image, $categorie, $createur)
     {
         try {
             $event = new Evenement();
-            $event->id = Evenement::all()->max('id') + 1;
             $event->titre = $titre;
             $event->description_md = $description;
             $event->tarif = $tarif;
@@ -24,7 +23,6 @@ class EventManagement implements EventManagementInterface
             $event->image_url = $image;
             $event->categorie()->associate($categorie);
             $event->createur()->associate($createur);
-            $event->date_creation = $dateCreation;
             $event->save();
 
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {

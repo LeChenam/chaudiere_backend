@@ -36,8 +36,7 @@ class CreationEventAction{
                     $queryParam['horaire'],
                     $queryParam['image'],
                     $queryParam['categorie'],
-                    $_SESSION['user'],
-                    date('Y-m-d')
+                    $_SESSION['user']
                 );
                 return $response->withHeader('Location', 'event/create')->withStatus(302);
             } catch (\Exception $e) {
