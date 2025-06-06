@@ -81,12 +81,56 @@ class Collection implements CollectionInterface
     public function getEvenements(): array
     {
         try {
-            $prestations = Evenement::all();
+            $evenements = Evenement::all();
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             throw new EntityNotFoundException("Table Prestation introuvable");
         } catch (QueryException $e) {
             throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
         }
-        return $prestations->toArray();
+        return $evenements->toArray();
+    }
+
+    /**
+     * @throws EntityNotFoundException
+     * @throws ExceptionInterne
+     */
+    public function getEvenementsByPeriode(string $periode): array
+    {
+        switch ($periode){
+            case "courante":
+                try {
+                    $ds = strtotime("now");
+                    $eventsbyperiode = Evenement::whereBetween('date_debut', [date("Y-m-01", $ds), date("Y-m-31", $ds)])->get();
+                } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    throw new EntityNotFoundException("Table Evenement introuvable");
+                } catch (QueryException $e) {
+                    throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
+                }
+                break;
+            case "passee":
+                try {
+                    $ds = strtotime("now");
+                    $eventsbyperiode = Evenement::where('date_debut', '<', date("Y-m-01", $ds))->get();
+                } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    throw new EntityNotFoundException("Table Evenement introuvable");
+                } catch (QueryException $e) {
+                    throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
+                }
+                break;
+            case "futur":
+                try {
+                    $ds = strtotime("now");
+                    $eventsbyperiode = Evenement::where('date_debut', '>', date("Y-m-31", $ds))->get();
+                } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    throw new EntityNotFoundException("Table Evenement introuvable");
+                } catch (QueryException $e) {
+                    throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
+                }
+                break;
+            default:
+            throw new ExceptionInterne("Erreur de requête : Mauvaise requête");
+        }
+
+        return $eventsbyperiode->toArray();
     }
 }
