@@ -5,6 +5,9 @@ use chaudiere\api\actions\EventsByCategorieAction;
 use chaudiere\api\actions\EventsByPeriodeAction;
 use chaudiere\webui\actions\CreationEventAction;
 use chaudiere\webui\actions\CreationCategorieAction;
+use chaudiere\webui\actions\GetEventAction;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use chaudiere\webui\actions\HomePageAction;
 use chaudiere\webui\actions\LoginAction;
 use chaudiere\webui\actions\LogoutAction;
@@ -27,6 +30,8 @@ return function (Slim\App $app) {
 
     // API de toutes les catégories avec option d'en chercher une par id
     $app->get('/api/categories/{id}/evenements[/]', EventsByCategorieAction::class)->setName('api_events_by_categories');
+
+    $app->get('/events[/]', GetEventAction::class)->setName('events');
 
     $app->map(['GET', 'POST'], '/createEvent', CreationEventAction::class)->setName('createEvent');
 
