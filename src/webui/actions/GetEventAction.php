@@ -20,7 +20,8 @@ class  GetEventAction
     {
         $events = Evenement::orderBy('date_debut', 'asc')->get();
         $categories = Categorie::all();
+        $selectedCategoryId = $_GET['categorie'] ?? null;
         $view = \Slim\Views\Twig::fromRequest($request);
-        return $view->render($response, $this->template, ['events'=> $events, 'categories' => $categories]);
+        return $view->render($response, $this->template, ['events'=> $events, 'categories' => $categories, 'selectedCategoryId' => $selectedCategoryId]);
     }
 }
