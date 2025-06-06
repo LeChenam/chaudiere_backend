@@ -1,0 +1,17 @@
+{% extends 'Base.twig' %}
+
+{% block title %}Créer une Catégorie{% endblock %}
+
+{% block content %}
+    <h1>Créer une Catégorie</h1>
+
+    <form method="get" action="{{ url_for('createCategorie') }}">
+        <label for="Libelle">Nom de la Catégorie :</label>
+        <input type="text" id="libelle" name="libelle" required>
+
+        <label for="description">Description :</label>
+        <textarea id="description" name="description" required></textarea>
+
+        <button type="submit">Créer</button>
+    </form>
+{% endblock %}
