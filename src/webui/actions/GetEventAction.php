@@ -2,6 +2,7 @@
 namespace chaudiere\webui\actions;
 
 use chaudiere\core\application\usecases\EventManagement;
+use chaudiere\core\domain\entities\Categorie;
 use chaudiere\core\domain\entities\Evenement;
 use Illuminate\Support\Facades\Event;
 
@@ -18,7 +19,8 @@ class  GetEventAction
     public function __invoke($request, $response, $args)
     {
         $events = Evenement::orderBy('date_debut', 'asc')->get();
+        $categories = Categorie::all();
         $view = \Slim\Views\Twig::fromRequest($request);
-        return $view->render($response, $this->template, ['events'=> $events]);
+        return $view->render($response, $this->template, ['events'=> $events, 'categories' => $categories]);
     }
 }

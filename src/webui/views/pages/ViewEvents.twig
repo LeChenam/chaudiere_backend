@@ -6,7 +6,7 @@
             {% for event in events %}
                 <li class="block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-blue-500">
                     <p>{{ event.titre }}</p>
-                    <p>catégorie : {{ event.categorie_id }}</p>
+                    <p>catégorie : {{ categories[event.categorie_id-1].libelle }}</p>
                     <p>date début : {{ event.date_debut|date("d/m/Y") }}</p>
                     {% if event.getAttribute('date_fin') %}
                         <p>date fin : {{ event.getAttribute('date_fin')|date("d/m/Y") }}</p>
