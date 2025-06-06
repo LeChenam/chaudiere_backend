@@ -32,6 +32,7 @@ class EventManagement implements EventManagementInterface
             $event->publie = false;
             $event->image_url = $image;
 
+            $event->date_creation = date('Y-m-d H:i:s');
             $event->categorie()->associate($categorie);
             $event->createur()->associate($createur);
             $event->date_creation = date("Y-m-d H:i:s");

@@ -6,6 +6,7 @@ use chaudiere\core\application\auth\AuthService;
 use chaudiere\core\application\auth\AuthServiceInterface;
 use chaudiere\core\application\exceptions\AuthentificationException;
 use chaudiere\core\application\exceptions\ExceptionInterne;
+use chaudiere\core\domain\exceptions\EntityNotFoundException;
 use chaudiere\webui\exceptions\ProviderAuthentificationException;
 
 class SessionAuthProvider implements AuthProviderInterface
@@ -35,10 +36,12 @@ class SessionAuthProvider implements AuthProviderInterface
     public function loginByCredential(string $email, string $password): void
     {
         try {
-            $user = $this->authService->loginByCredential($email, $password);
-            $_SESSION[$this->sessionKey] = $user;
+            $userID = $this->authService->loginByCredential($email, $password);
+            $_SESSION[$this->sessionKey] = $this->authService->getUserById($userID);
         } catch (AuthentificationException|ExceptionInterne $e) {
             throw new ProviderAuthentificationException($e->getMessage());
+        } catch (EntityNotFoundException $e) {
+            throw new ProviderAuthentificationException("Utilisateur non trouvé : " . $e->getMessage());
         }
     }
 
