@@ -86,6 +86,16 @@ class CreationEventAction{
                 $filename = null;
             }
 
+            // Validation des données du formulaire
+            if(FILTER_VAR($parseBody['titre'], FILTER_SANITIZE_SPECIAL_CHARS) === false ||
+               FILTER_VAR($parseBody['description'], FILTER_SANITIZE_SPECIAL_CHARS) === false ||
+               FILTER_VAR($parseBody['tarif'], FILTER_SANITIZE_SPECIAL_CHARS) === false ||
+               empty($parseBody['titre']) || empty($parseBody['description']) ||
+               empty($parseBody['tarif']) || empty($parseBody['date_debut']) ||
+               !isset($parseBody['categorie'])) {
+                throw new HttpBadRequestException($request, "Données du formulaire invalides.");
+            }
+
             try {
                 $this->event->createEvent(
                     $parseBody['titre'],

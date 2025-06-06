@@ -60,6 +60,9 @@ class CreationCategorieAction{
                 if (empty($nom) || empty($description)) {
                     throw new InvalidArgumentException("Le nom et la description sont obligatoires.");
                 }
+                if (FILTER_VAR($nom, FILTER_SANITIZE_SPECIAL_CHARS) === false || FILTER_VAR($description, FILTER_SANITIZE_SPECIAL_CHARS) === false) {
+                    throw new InvalidArgumentException("Nom ou description invalide.");
+                }
                 $this->categorieManagement->createCategorie($nom, $description);
             } catch (\Exception $e) {
                 throw new HttpBadRequestException($request, $e);
