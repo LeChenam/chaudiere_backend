@@ -3,49 +3,71 @@
 {% block title %}Créer un Événement{% endblock %}
 
 {% block content %}
-    <h1>Créer un Événement</h1>
+    <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Créer un Événement</h1>
 
-    <form method="post" action="{{ url_for('createEvent') }}" enctype="multipart/form-data">
-        <ul>
-            <li>
-            <label for="titre">Nom de l'Événement :</label>
-            <input type="text" id="titre" name="titre" required>
-            </li>
+    <form method="post" action="{{ url_for('createEvent') }}" enctype="multipart/form-data" class="space-y-6 max-w-2xl mx-auto bg-gray-100 p-8 shadow-lg rounded-lg">
 
-            <li>
-            <label for="description">Description :</label>
-            <textarea id="description" name="description" required></textarea>
-            </li>
+        <div>
+            <label for="titre" class="block text-sm font-medium text-gray-700">Nom de l'Événement</label>
+            <input type="text" id="titre" name="titre" required
+                   class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+        </div>
 
-            <li>
-            <label for="tarif">Tarif :</label>
-            <input type="number" id="tarif" name="tarif" step="0.01" required>
-            </li>
+        <div>
+            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+            <textarea id="description" name="description" required rows="4"
+                      class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+        </div>
 
-            <li>
-            <label for="date_debut">Date :</label>
-            <input type="date" id="date_debut" name="date_debut" required>
+        <div>
+            <label for="tarif" class="block text-sm font-medium text-gray-700">Tarif</label>
+            <input type="text" id="tarif" name="tarif" required
+                   class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+        </div>
 
-            <label for="date_fin">Date :</label>
-            <input type="date" id="date_fin" name="date_fin" required>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="date_debut" class="block text-sm font-medium text-gray-700">Date de début</label>
+                <input type="date" id="date_debut" name="date_debut" required
+                       class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+            </div>
 
-            <label for="horaire">Horaire :</label>
-            <input type="time" id="horaire" name="horaire" required>
-            </li>
+            <div>
+                <label for="date_fin" class="block text-sm font-medium text-gray-700">Date de fin</label>
+                <input type="date" id="date_fin" name="date_fin"
+                       class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+            </div>
+        </div>
 
-            <li>
-            <label for="image">Image :</label>
-            <input type="file" id="image" name="image" required>
+        <div>
+            <label for="horaire" class="block text-sm font-medium text-gray-700">Horaire</label>
+            <input type="time" id="horaire" name="horaire"
+                   class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+        </div>
 
-            <label for="categorie">Categorie :</label>
-            <select name="categorie" id="categorie">
+        <div>
+            <label for="image" class="block text-sm font-medium text-gray-700">Image</label>
+            <input type="file" id="image" name="image" accept="image/*"
+                   class="mt-1 block w-full text-sm text-gray-700 bg-gray-50 border border-gray-300 rounded-md file:mr-4 file:py-2 file:px-4 file:border-0 file:rounded-md file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+        </div>
+
+        <div>
+            <label for="categorie" class="block text-sm font-medium text-gray-700">Catégorie</label>
+            <select id="categorie" name="categorie"
+                    class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 {% for categorie in categories %}
                     <option value="{{ categorie.id }}">{{ categorie.libelle }}</option>
                 {% endfor %}
             </select>
-            </li>
+        </div>
 
-            <li><button type="submit">Créer</button></li>
-        </ul>
+        <div class="pt-4">
+            <button type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition">
+                Créer
+            </button>
+        </div>
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     </form>
 {% endblock %}

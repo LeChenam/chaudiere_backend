@@ -15,7 +15,7 @@ INSERT INTO `categorie` (id, libelle, description_md) VALUES
 (4, 'spectacle', '### Spectacles\n\nPerformances **vivantes** : théâtre, danse, humour.');
 
 -- Données de test : événements
-INSERT INTO `evenement` (id, titre, description_md, tarif, date_debut, date_fin, horaire, publie, image_url, categorie_id, cree_par) VALUES
+INSERT INTO `evenement` (id, titre, description_md, tarif, date_debut, date_fin, horaire, publie, image, categorie_id, cree_par) VALUES
 (1, 'Événement culturel 1', 'Description de l''événement *1* en **markdown**.\n\nAvec des détails intéressants.', 'Entrée libre', '2025-06-17', '2025-06-24', NULL, TRUE, 'hotelreine.gif', 3, '550e8400-e29b-41d4-a716-446655440000'),
 (2, 'Événement culturel 2', 'Description de l''événement *2* en **markdown**.\n\nAvec des détails intéressants.', '5€', '2025-06-19', NULL, '18:00:00', TRUE, 'diner.jpg', 2, '660e8400-e29b-41d4-a716-446655440000'),
 (3, 'Événement culturel 3', 'Description de l''événement *3* en **markdown**.\n\nAvec des détails intéressants.', 'Prix libre', '2025-06-29', NULL, '19:30:00', FALSE, 'animateur.jpg', 3, '550e8400-e29b-41d4-a716-446655440000'),
