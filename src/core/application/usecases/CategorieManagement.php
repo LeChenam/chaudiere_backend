@@ -4,7 +4,7 @@ namespace chaudiere\core\application\usecases;
 
 use chaudiere\core\domain\entities\Categorie;
 use chaudiere\core\application\exceptions\ExceptionInterne;
-use Illuminate\Contracts\Queue\EntityNotFoundException;
+use chaudiere\core\domain\exceptions\EntityNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Slim\Exception\HttpInternalServerErrorException;

@@ -1,5 +1,4 @@
 <?php
-
 namespace chaudiere\core\application\exceptions;
 class ExceptionInterne extends \Exception
 {
