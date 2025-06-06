@@ -15,7 +15,9 @@ use chaudiere\webui\providers\SessionCsrfTokenProvider;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpForbiddenException;
 use Slim\Exception\HttpUnauthorizedException;
+use Slim\Flash\Messages;
 use Slim\Routing\RouteContext;
+use Slim\Views\Twig;
 
 class HomePageAction
 {
@@ -35,6 +37,10 @@ class HomePageAction
         try {
             $this->authProvider->getSignedInUser();
         } catch (ProviderAuthentificationException $e) {
+
+            $flash = new Messages();
+            $flash->addMessage('error', "Vous devez être connecté pour accéder à cette page.");
+
             $routeParser = RouteContext::fromRequest($request)->getRouteParser();
             return $response->withHeader('Location', $routeParser->urlFor('login'))->withStatus(302);
         }

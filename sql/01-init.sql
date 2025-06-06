@@ -13,7 +13,7 @@ CREATE TABLE `user` (
 
 DROP TABLE IF EXISTS `categorie`;
 CREATE TABLE `categorie` (
-    `id` int(11) PRIMARY KEY,
+    `id` int(11) PRIMARY KEY AUTO_INCREMENT,
     `libelle` VARCHAR(128) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL UNIQUE,
     `description_md` TEXT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
@@ -21,7 +21,7 @@ CREATE TABLE `categorie` (
 
 DROP TABLE IF EXISTS `evenement`;
 CREATE TABLE `evenement` (
-    `id` int(11) PRIMARY KEY,
+    `id` int(11) PRIMARY KEY AUTO_INCREMENT,
     `titre` TEXT NOT NULL,
     `description_md` TEXT NOT NULL,
     `tarif` VARCHAR(128) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
@@ -29,7 +29,7 @@ CREATE TABLE `evenement` (
     `date_fin` DATE,
     `horaire` TIME,
     `publie` BOOLEAN DEFAULT FALSE,
-    `image_url` VARCHAR(128) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
+    `image` VARCHAR(128) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
     `categorie_id` int(11) NOT NULL REFERENCES categorie(id),
     `cree_par` varchar(40) NOT NULL REFERENCES user(id),
     `date_creation` TIMESTAMP DEFAULT CURRENT_TIMESTAMP

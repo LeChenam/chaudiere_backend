@@ -20,7 +20,6 @@ class CategorieManagement implements CategorieManagementInterface{
     public function createCategorie(string $nom, string $description){
         try{
             $categorie = new Categorie();
-            $categorie->id = null; // Auto-incremented by the database
             $categorie->libelle = $nom;
             $categorie->description_md = $description;
             $categorie->save();

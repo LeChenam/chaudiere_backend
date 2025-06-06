@@ -12,30 +12,36 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class EventManagement implements EventManagementInterface
 {
-    public function createEvent($titre, $description, $tarif, $dateDebut, $dateFin, $horaire, $image, $categorie, $createur)
+    /**
+     * @throws ExceptionInterne
+     * @throws EntityNotFoundException
+     */
+    public function createEvent(string $titre, string $description, string $tarif, string $dateDebut, ?string $dateFin, ?string $horaire, ?string $image, int $categorie, string $createur): void
     {
         try {
 
             $categorie = Categorie::findOrFail($categorie);
             $createur = User::findOrFail($createur);
-            $this->debug_to_console("passe8");
-
 
             $event = new Evenement();
-            $event->id = Evenement::max("id") + 1;
             $event->titre = $titre;
             $event->description_md = $description;
             $event->tarif = $tarif;
             $event->date_debut = $dateDebut;
-            $event->date_fin = $dateFin;
-            $event->horaire = $horaire;
+            if($dateFin) {
+                $event->date_fin = $dateFin;
+            }
+            if($horaire) {
+                $event->horaire = $horaire;
+            }
             $event->publie = false;
-            $event->image_url = $image;
-
+            if($image){
+                $event->image = $image;
+            }
             $event->date_creation = date('Y-m-d H:i:s');
+
             $event->categorie()->associate($categorie);
             $event->createur()->associate($createur);
-            $event->date_creation = date("Y-m-d H:i:s");
             $event->save();
 
         } catch (\Illuminate\Database\QueryException $e) {
@@ -43,16 +49,7 @@ class EventManagement implements EventManagementInterface
         } catch (ModelNotFoundException $e) {
             throw new EntityNotFoundException("Catégorie ou créateur introuvable");
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la création de l'événement : " . $e->getMessage());
+            throw new ExceptionInterne("Erreur lors de la création de l'événement : " . $e->getMessage());
         }
     }
-
-    function debug_to_console($data) {
-        $output = $data;
-        if (is_array($output))
-            $output = implode(',', $output);
-
-        echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
-    }
-
 }
