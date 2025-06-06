@@ -3,7 +3,7 @@
 
 namespace chaudiere\core\application\usecases;
 
-use chaudiere\core\application\exceptions\ExceptionDatabase;
+use chaudiere\core\application\exceptions\ExceptionInterne;
 use chaudiere\core\domain\entities\Evenement;
 use Illuminate\Contracts\Queue\EntityNotFoundException;
 
@@ -30,7 +30,7 @@ class EventManagement implements EventManagementInterface
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             throw new EntityNotFoundException("Table introuvable");
         } catch (\Illuminate\Database\QueryException $e){
-            throw new ExceptionDatabase("Erreur de requête : " . $e->getMessage());
+            throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
         }
     }
 

@@ -1,7 +1,7 @@
 <?php
 
 namespace chaudiere\core\application\exceptions;
-class ExceptionDatabase extends \Exception
+class ExceptionInterne extends \Exception
 {
     public function __construct($message = "Erreur de base de données")
     {
