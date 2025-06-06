@@ -48,14 +48,19 @@ class EvenementsAction {
                 $response->getBody()->write(json_encode($data));
             }
         } else{
+            $periodetab = explode(",",$periode);
             //On tente de récupérer les catégories depuis le modèle
-            try {
-                $evenements = $this->collection->getEvenementsByPeriode($periode);
-            } catch (EntityNotFoundException $e) {
-                throw new HttpNotFoundException($request, $e->getMessage());
-            } catch (ExceptionInterne $e) {
-                throw new HttpInternalServerErrorException($request, $e->getMessage());
+            $evenements = [];
+            for ($i = 0; $i < count($periodetab); $i++){
+                try {
+                    $evenements = array_merge($evenements, $this->collection->getEvenementsByPeriode($periodetab[$i]));
+                } catch (EntityNotFoundException $e) {
+                    throw new HttpNotFoundException($request, $e->getMessage());
+                } catch (ExceptionInterne $e) {
+                    throw new HttpInternalServerErrorException($request, $e->getMessage());
+                }
             }
+            
 
             //Transformation des données
             $data = [ 'type' => 'collection',
