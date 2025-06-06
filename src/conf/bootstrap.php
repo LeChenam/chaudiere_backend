@@ -2,6 +2,7 @@
 declare(strict_types=1);
 session_start();
 
+use chaudiere\webui\middleware\TwigGlobalSnackBarMiddleware;
 use chaudiere\webui\middleware\TwigGlobalUserMiddleware;
 use Slim\Factory\AppFactory;
 use chaudiere\infrastructure\Eloquent;
@@ -27,6 +28,7 @@ $flash = new Messages();
 $twig->getEnvironment()->addGlobal('flash', $flash);
 
 $app->add(new TwigGlobalUserMiddleware($twig));
+$app->add(new TwigGlobalSnackBarMiddleware());
 $app->add(TwigMiddleware::create($app, $twig));
 
 $app = (require_once __DIR__ . '/routes.php')($app);

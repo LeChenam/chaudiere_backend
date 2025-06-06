@@ -17,6 +17,8 @@ use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpUnauthorizedException;
+use Slim\Flash\Messages;
+use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 
 class CreationEventAction{
@@ -49,14 +51,10 @@ class CreationEventAction{
 
             $categories = $this->categorie->getCategories();
             $view = Twig::fromRequest($request);
-            $globals = $view->getEnvironment()->getGlobals();
-            $flash = $globals['flash'];
-            $messages = $flash->getMessages();
 
             return $view->render($response, $this->template,
-                ['categories'=> $categories, 'csrf_token' => $csrfToken, 'flash' => $messages]);
-        }
-        else if($request->getMethod() == 'POST') {
+                ['categories'=> $categories, 'csrf_token' => $csrfToken]);
+        } else {
 
             try {
                 $user = $this->authProvider->getSignedInUser();
@@ -101,10 +99,11 @@ class CreationEventAction{
                     $user['id']
                 );
 
-                $flash = $globals['flash'];
+                $flash = new Messages();
+                $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
                 $flash->addMessage('success', "L'évènement a été créé avec succès.");
-                return $response->withHeader('Location', 'createEvent')->withStatus(302);
+                return $response->withHeader('Location', $routeParser->urlFor('createEvent'))->withStatus(302);
             } catch (ExceptionInterne $e) {
                 throw new HttpInternalServerErrorException($request, $e);
             } catch (EntityNotFoundException $e) {

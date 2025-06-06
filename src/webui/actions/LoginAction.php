@@ -11,7 +11,9 @@ use chaudiere\webui\providers\SessionCsrfTokenProvider;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpUnauthorizedException;
+use Slim\Flash\Messages;
 use Slim\Routing\RouteContext;
+use Slim\Views\Twig;
 
 class LoginAction
 {
@@ -53,6 +55,10 @@ class LoginAction
             $routeParser = RouteContext::fromRequest($request)->getRouteParser();
             try {
                 $this->authProvider->getSignedInUser();
+
+                $flash = new Messages();
+                $flash->addMessage('info', "Connexion réussie !");
+
                 return $response->withHeader('Location', $routeParser->urlFor('home'))->withStatus(302);
             } catch (ProviderAuthentificationException $e) {
                 throw new HttpInternalServerErrorException($request, $e->getMessage());
@@ -62,7 +68,7 @@ class LoginAction
             $token = $this->csrfTokenProvider->generateCsrf();
 
             // Afficher le formulaire
-            $view = \Slim\Views\Twig::fromRequest($request);
+            $view = Twig::fromRequest($request);
             return $view->render($response, $this->template , [
                 'csrf_token' => $token
             ]);

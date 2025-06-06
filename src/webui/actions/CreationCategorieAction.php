@@ -13,6 +13,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpUnauthorizedException;
+use Slim\Flash\Messages;
 use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 
@@ -40,13 +41,10 @@ class CreationCategorieAction{
             }
 
             $view = Twig::fromRequest($request);
-            $globals = $view->getEnvironment()->getGlobals();
-            $flash = $globals['flash'];
-            $messages = $flash->getMessages();
 
             $csrfToken = $this->csrfTokenProvider->generateCsrf();
-            return $view->render($response, $this->template, ['csrf_token' => $csrfToken, 'flash' => $messages]);
-        } elseif ($request->getMethod() == 'POST') {
+            return $view->render($response, $this->template, ['csrf_token' => $csrfToken]);
+        } else {
             $queryParam = $request->getParsedBody();
             $csrfToken = $queryParam['csrf_token'] ?? null;
 
@@ -67,16 +65,11 @@ class CreationCategorieAction{
                 throw new HttpBadRequestException($request, $e);
             }
 
-            $view = Twig::fromRequest($request);
-            $globals = $view->getEnvironment()->getGlobals();
-            $flash = $globals['flash'];
-
+            $flash = new Messages();
             $flash->addMessage('success', 'La catégorie a été créée avec succès.');
 
             $routeParser = RouteContext::fromRequest($request)->getRouteParser();
             return $response->withHeader('Location', $routeParser->urlFor('createCategorie'))->withStatus(302);
-        } else {
-            return $response->withStatus(405);
         }
     }
 }
