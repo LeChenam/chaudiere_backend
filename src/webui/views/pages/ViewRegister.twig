@@ -1,0 +1,73 @@
+{% extends 'Base.twig' %}
+
+{% block title %}Registration{% endblock %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold text-center uppercase">Enregister un nouvel admin</h1>
+    <form method="post" action="{{ url_for('register') }}" class="max-w-md mx-auto mt-8">
+        <div class="mb-4">
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+        </div>
+        <div class="mb-4">
+            <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+            <div class="relative">
+                <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <i id="passwordeye" class="fa-solid fa-eye absolute right-0 top-1/2 -translate-y-1/2 pr-2"></i>
+            </div>
+        </div>
+        <div class="mb-6">
+            <label for="password" class="block text-sm font-medium text-gray-700">Confirmer mot de passe <i id="email-error" class="hidden fa-solid fa-triangle-exclamation text-red-600 text-xl" title="Les mots de passe ne correspondent pas"></i></label>
+            <div class="relative">
+                <input type="password" id="passwordconfirm" name="passwordconfirm" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <i id="passwordconfirmeye" class="fa-solid fa-eye absolute right-0 top-1/2 -translate-y-1/2 pr-2"></i>
+            </div>
+        </div>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Creer le compte</button>
+    </form>
+
+    <p class="mt-4 text-center text-sm text-gray-600">
+        <a href="{{ url_for('login') }}" class="text-blue-600 hover:text-blue-500">Connectez-vous</a>
+    </p>
+
+    <script>
+        const password = document.getElementById('password');
+        const passwordConfirm = document.getElementById('passwordconfirm');
+
+        document.querySelector('form').addEventListener('submit', function(event) {
+            if (password.value !== passwordConfirm.value) {
+                event.preventDefault();
+                passwordConfirm.classList.add('border-red-500');
+                document.getElementById('email-error').classList.remove('hidden');
+            }
+        });
+        passwordConfirm.addEventListener('input', function() {
+            passwordConfirm.classList.remove('border-red-500');
+            document.getElementById('email-error').classList.add('hidden');
+        });
+
+        document.getElementById('passwordeye').addEventListener('click', function() {
+            if (password.type === 'password') {
+                password.type = 'text';
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            } else {
+                password.type = 'password';
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+            }
+        });
+        document.getElementById('passwordconfirmeye').addEventListener('click', function() {
+            if (passwordConfirm.type === 'password') {
+                passwordConfirm.type = 'text';
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            } else {
+                passwordConfirm.type = 'password';
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+            }
+        });
+    </script>
+{% endblock %}

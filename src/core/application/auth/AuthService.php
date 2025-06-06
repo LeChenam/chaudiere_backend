@@ -29,6 +29,7 @@ class AuthService implements AuthServiceInterface
             $user->id = Uuid::uuid4()->toString();
             $user->email = $email;
             $user->password = $password;
+            $user->date_creation = date('Y-m-d H:i:s');
             $user->save();
             return $user->id;
         } catch (\Illuminate\Database\QueryException $e) {

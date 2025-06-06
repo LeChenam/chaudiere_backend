@@ -5,15 +5,19 @@ use chaudiere\api\actions\EventsByCategorieAction;
 use chaudiere\api\actions\EventsByPeriodeAction;
 use chaudiere\webui\actions\CreationEventAction;
 use chaudiere\webui\actions\CreationCategorieAction;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use chaudiere\webui\actions\HomePageAction;
+use chaudiere\webui\actions\LoginAction;
+use chaudiere\webui\actions\LogoutAction;
+use chaudiere\webui\actions\RegisterAction;
 
 return function (Slim\App $app) {
 
-    $app->get('[/]', function (Request $request, Response $response) {
-        $view = \Slim\Views\Twig::fromRequest($request);
-        return $view->render($response, 'pages/ViewAccueil.twig');
-    })->setName('home');
+    $app->get('[/]',  HomePageAction::class)->setName('home');
+
+    // Authentication
+    $app->map(['GET', 'POST'], '/login[/]', LoginAction::class)->setName('login');
+    $app->map(['GET', 'POST'], '/register[/]', RegisterAction::class)->setName('register');
+    $app->post('/logout[/]',  LogoutAction::class)->setName('logout');
 
     // API de toutes les catégories avec option d'en chercher une par id
     $app->get('/api/categories[/[{id}[/]]]', CategoriesAction::class)->setName('api_categories');
