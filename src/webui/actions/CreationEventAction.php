@@ -6,22 +6,35 @@ use chaudiere\core\application\usecases\CategorieManagement;
 use chaudiere\core\application\usecases\EventManagement;
 use chaudiere\core\domain\entities\Categorie;
 use chaudiere\core\domain\exceptions\EntityNotFoundException;
+use chaudiere\webui\exceptions\ProviderAuthentificationException;
+use chaudiere\webui\providers\AuthProviderInterface;
+use chaudiere\webui\providers\SessionAuthProvider;
+use Slim\Exception\HttpUnauthorizedException;
 use Slim\Views\Twig;
 
 class CreationEventAction{
     private string $template;
     private EventManagement $event;
     private CategorieManagement $categorie;
+    private AuthProviderInterface $authProvider;
 
     public function __construct(){
         $this->template = 'pages/ViewCreationEvent.twig';
         $this->event = new EventManagement();
         $this->categorie = new CategorieManagement();
+        $this->authProvider = new SessionAuthProvider();
     }
 
     public function __invoke($request, $response, $args)
     {
         if ($request->getMethod() == 'GET') {
+
+            try {
+                $this->authProvider->getSignedInUser();
+            } catch (ProviderAuthentificationException $e) {
+                throw new HttpUnauthorizedException($request, "Vous devez être connecté pour accéder à cette page.");
+            }
+
             $categories = $this->categorie->getCategories();
             $view = Twig::fromRequest($request);
             return $view->render($response, $this->template, ['categories'=> $categories]);

@@ -3,6 +3,9 @@ namespace chaudiere\webui\actions;
 
 use chaudiere\core\domain\entities\Categorie;
 use chaudiere\core\application\usecases\CategorieManagement;
+use chaudiere\webui\exceptions\ProviderAuthentificationException;
+use chaudiere\webui\providers\AuthProviderInterface;
+use chaudiere\webui\providers\SessionAuthProvider;
 use chaudiere\webui\providers\SessionCsrfTokenProvider;
 use chaudiere\webui\providers\CsrfTokenProviderInterface;
 use chaudiere\webui\exceptions\CsrfException;
@@ -11,23 +14,33 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use http\Exception\InvalidArgumentException;
 use Slim\Exception\HttpBadRequestException;
 use Exception;
+use Slim\Exception\HttpUnauthorizedException;
 use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 
 class CreationCategorieAction{
     private string $template;
     private CategorieManagement $categorieManagement;
+    private AuthProviderInterface $authProvider;
     private CsrfTokenProviderInterface $csrfTokenProvider;
 
     public function __construct(){
         $this->template = 'pages/ViewCreationCategorie.twig';
         $this->categorieManagement = new CategorieManagement();
+        $this->authProvider = new SessionAuthProvider();
         $this->csrfTokenProvider = new SessionCsrfTokenProvider();
     }
 
     public function __invoke(Request $request,Response $response,array $args): Response
     {
         if($request->getMethod() == 'GET') {
+
+            try {
+                $this->authProvider->getSignedInUser();
+            } catch (ProviderAuthentificationException $e) {
+                throw new HttpUnauthorizedException($request, "Vous devez être connecté pour accéder à cette page.");
+            }
+
             $view = Twig::fromRequest($request);
             $csrfToken = $this->csrfTokenProvider->generateCsrf();
             return $view->render($response, $this->template, ['csrf_token' => $csrfToken]);

@@ -4,18 +4,14 @@ use chaudiere\api\actions\EvenementsAction;
 use chaudiere\api\actions\EventsByCategorieAction;
 use chaudiere\webui\actions\CreationEventAction;
 use chaudiere\webui\actions\CreationCategorieAction;
+use chaudiere\webui\actions\HomePageAction;
 use chaudiere\webui\actions\LoginAction;
 use chaudiere\webui\actions\LogoutAction;
 use chaudiere\webui\actions\RegisterAction;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
 
 return function (Slim\App $app) {
 
-    $app->get('[/]', function (Request $request, Response $response) {
-        $view = \Slim\Views\Twig::fromRequest($request);
-        return $view->render($response, 'pages/ViewAccueil.twig');
-    })->setName('home');
+    $app->get('[/]',  HomePageAction::class)->setName('home');
 
     // Authentication
     $app->map(['GET', 'POST'], '/login[/]', LoginAction::class)->setName('login');
