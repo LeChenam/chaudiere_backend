@@ -2,13 +2,15 @@
 declare(strict_types=1);
 session_start();
 
+use chaudiere\webui\middleware\TwigGlobalUserMiddleware;
 use Slim\Factory\AppFactory;
 use chaudiere\infrastructure\Eloquent;
+use Slim\Views\TwigMiddleware;
 
 Eloquent::init(__DIR__ . '/db.conf.ini.dist');
 
 $app = AppFactory::create();
-$app->addRoutingMiddleware(true, false, false);
+$app->addRoutingMiddleware();
 $app->addBodyParsingMiddleware();
 $app->addErrorMiddleware(true, false, false);
 
@@ -16,11 +18,12 @@ $twig = \Slim\Views\Twig::create(__DIR__ . '/../webui/views', ['cache' => false,
 $twig->getEnvironment()
     ->addGlobal('globals', [
             'css_dir'=> 'static/css',
-            'img_dir'=> 'static/img',
+            'img_dir'=> 'static/images',
         ]
     );
 
-$app->add(\Slim\Views\TwigMiddleware::create($app, $twig));
+$app->add(new TwigGlobalUserMiddleware($twig));
+$app->add(TwigMiddleware::create($app, $twig));
 
 $app = (require_once __DIR__ . '/routes.php')($app);
 return $app;

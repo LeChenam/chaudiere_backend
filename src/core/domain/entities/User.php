@@ -9,7 +9,7 @@ class User extends Model
     public $incrementing = false;
     public $keyType = 'string';
     protected $guarded = ['est_superadmin'];
-    public $timestamps = true;
+    public $timestamps = false;
 
     public function evenements(): \Illuminate\Database\Eloquent\Relations\HasMany
     {

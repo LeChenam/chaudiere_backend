@@ -4,6 +4,9 @@ use chaudiere\api\actions\EvenementsAction;
 use chaudiere\api\actions\EventsByCategorieAction;
 use chaudiere\webui\actions\CreationEventAction;
 use chaudiere\webui\actions\CreationCategorieAction;
+use chaudiere\webui\actions\LoginAction;
+use chaudiere\webui\actions\LogoutAction;
+use chaudiere\webui\actions\RegisterAction;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -13,6 +16,11 @@ return function (Slim\App $app) {
         $view = \Slim\Views\Twig::fromRequest($request);
         return $view->render($response, 'pages/ViewAccueil.twig');
     })->setName('home');
+
+    // Authentication
+    $app->map(['GET', 'POST'], '/login[/]', LoginAction::class)->setName('login');
+    $app->map(['GET', 'POST'], '/register[/]', RegisterAction::class)->setName('register');
+    $app->post('/logout[/]',  LogoutAction::class)->setName('logout');
 
     // API de toutes les catégories avec option d'en chercher une par id
     $app->get('/api/categories[/[{id}[/]]]', CategoriesAction::class)->setName('api_categories');
