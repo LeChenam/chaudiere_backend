@@ -133,4 +133,50 @@ class Collection implements CollectionInterface
 
         return $eventsbyperiode->toArray();
     }
+
+    public function getEvenementsRanges(string $rangement): array
+    {
+        switch ($rangement){
+            case "date-asc":
+                try {
+                    $evenementsranges = Evenement::orderBy('date_debut', 'asc')->get();
+                } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    throw new EntityNotFoundException("Table Evenement introuvable");
+                } catch (QueryException $e) {
+                    throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
+                }
+                break;
+            case "date-desc":
+                try {
+                    $evenementsranges = Evenement::orderBy('date_debut', 'desc')->get();
+                } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    throw new EntityNotFoundException("Table Evenement introuvable");
+                } catch (QueryException $e) {
+                    throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
+                }
+                break;
+            case "titre":
+                try {
+                    $evenementsranges = Evenement::orderBy('titre', 'asc')->get();
+                } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    throw new EntityNotFoundException("Table Evenement introuvable");
+                } catch (QueryException $e) {
+                    throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
+                }
+                break;
+            case "categorie":
+                try {
+                    $evenementsranges = Evenement::orderBy('categorie_id', 'asc')->get();
+                } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    throw new EntityNotFoundException("Table Evenement introuvable");
+                } catch (QueryException $e) {
+                    throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
+                }
+                break;
+            default:
+            throw new ExceptionInterne("Erreur de requête : Mauvaise requête");
+        }
+        
+        return $evenementsranges->toArray();
+    }
 }
