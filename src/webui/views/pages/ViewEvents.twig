@@ -1,17 +1,43 @@
 {% extends 'Base.twig' %}
 
 {% block content %}
-    <h1 class="text-4xl font-bold text-center pb-3">Les événement</h1>
-        <ul class="text-center">
-            {% for event in events %}
+    <h1 class="text-4xl font-bold text-center pb-3">Les événements</h1>
+
+    <form method="GET" action="{{ url_for('events') }}" id="filterForm">
+        <label for="categorie">Filtrer par catégorie :</label>
+        <select name="categorie" id="categorie">
+            <option value="">-- Toutes les catégories --</option>
+            {% for categorie in categories %}
+                <option value="{{ categorie.id }}"
+                        {% if categorie.id == selectedCategoryId %} selected {% endif %}>
+                    {{ categorie.libelle }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <ul class="text-center">
+        {% for event in events %}
+            {% if not selectedCategoryId or event.categorie_id == selectedCategoryId %}
                 <li class="block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-blue-500">
                     <p>{{ event.titre }}</p>
-                    <p>catégorie : {{ categories[event.categorie_id-1].libelle }}</p>
+                    <p>
+                        catégorie :
+                        {% set cat = categories|filter(c => c.id == event.categorie_id)|first %}
+                        {{ cat ? cat.libelle : 'Inconnue' }}
+                    </p>
                     <p>date début : {{ event.date_debut|date("d/m/Y") }}</p>
                     {% if event.getAttribute('date_fin') %}
                         <p>date fin : {{ event.getAttribute('date_fin')|date("d/m/Y") }}</p>
                     {% endif %}
                 </li>
-            {% endfor %}
-        </ul>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <script>
+        document.getElementById('categorie').addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
+    </script>
 {% endblock %}
