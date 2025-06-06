@@ -7,6 +7,8 @@ use chaudiere\core\application\exceptions\ExceptionInterne;
 use Illuminate\Contracts\Queue\EntityNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Slim\Exception\HttpInternalServerErrorException;
+use Slim\Exception\HttpNotFoundException;
 
 class CategorieManagement implements CategorieManagementInterface{
 
@@ -18,12 +20,13 @@ class CategorieManagement implements CategorieManagementInterface{
     public function createCategorie(string $nom, string $description){
         try{
             $categorie = new Categorie();
+            $categorie->id = null; // Auto-incremented by the database
             $categorie->libelle = $nom;
             $categorie->description_md = $description;
             $categorie->save();
         } catch(ModelNotFoundException $e) {
             throw new EntityNotFoundException("Table introuvable");
-        } catch (QueryException $e) {
+        } catch (ExceptionInterne $e) {
             throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
         }
     }
