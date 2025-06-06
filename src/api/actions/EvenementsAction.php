@@ -16,11 +16,41 @@ class EvenementsAction {
     }
 
     public function __invoke($request, $response, $args){
+        $queryParams = $request->getQueryParams();
         $id = $args['id'] ?? null;
+        $periode = $queryParams['periode'] ?? null;
 
-        if ($id == null) {
+        if ($periode == null) {
+            if ($id == null) {
+                try {
+                    $evenements = $this->collection->getEvenements();
+                } catch (EntityNotFoundException $e) {
+                    throw new HttpNotFoundException($request, $e->getMessage());
+                }
+
+                //Transformation des données
+                $data = [ 'type' => 'collection',
+                    'count' => count($evenements),
+                    'evenements' => $evenements ];
+                $response->getBody()->write(json_encode($data));
+
+            } else{
+                //On tente de récupérer les catégories depuis le modèle
+                try {
+                    $evenement = $this->collection->getEvenementById($id);
+                } catch (EntityNotFoundException $e) {
+                    throw new HttpNotFoundException($request, $e->getMessage());
+                }
+
+                //Transformation des données
+                $data = [ 'type' => 'ressource',
+                    'evenement' => $evenement ];
+                $response->getBody()->write(json_encode($data));
+            }
+        } else{
+            //On tente de récupérer les catégories depuis le modèle
             try {
-                $evenements = $this->collection->getEvenements();
+                $evenements = $this->collection->getEvenementsByPeriode($periode);
             } catch (EntityNotFoundException $e) {
                 throw new HttpNotFoundException($request, $e->getMessage());
             } catch (ExceptionInterne $e) {
@@ -29,23 +59,9 @@ class EvenementsAction {
 
             //Transformation des données
             $data = [ 'type' => 'collection',
+                'periode' => $periode,
                 'count' => count($evenements),
-                'evenements' => $evenements ];
-            $response->getBody()->write(json_encode($data));
-
-        } else{
-            //On tente de récupérer les catégories depuis le modèle
-            try {
-                $evenement = $this->collection->getEvenementById($id);
-            } catch (EntityNotFoundException $e) {
-                throw new HttpNotFoundException($request, $e->getMessage());
-            } catch (ExceptionInterne $e) {
-                throw new HttpInternalServerErrorException($request, $e->getMessage());
-            }
-
-            //Transformation des données
-            $data = [ 'type' => 'ressource',
-                'evenement' => $evenement ];
+                'evenement' => $evenements ];
             $response->getBody()->write(json_encode($data));
         }
 
