@@ -37,7 +37,7 @@ class CreationEventAction{
                 $filename = null;
             }
             try {
-                $ev = $this->event->createEvent(
+                $this->event->createEvent(
                     $parseBody['titre'],
                     $parseBody['description'],
                     $parseBody['tarif'],
@@ -48,8 +48,6 @@ class CreationEventAction{
                     $parseBody['categorie'],
                     $_SESSION['user']
                 );
-                $this->debug_to_console($ev->updated_at);
-                $ev->save();
                 $this->debug_to_console("passe1");
                 return $response->withHeader('Location', 'createEvent')->withStatus(302);
             } catch (ExceptionInterne $e) {

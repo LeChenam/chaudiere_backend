@@ -36,7 +36,7 @@ class EventManagement implements EventManagementInterface
             $event->categorie()->associate($categorie);
             $event->createur()->associate($createur);
             $event->date_creation = date("Y-m-d H:i:s");
-            return $event;
+            $event->save();
 
         } catch (\Illuminate\Database\QueryException $e) {
             throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
