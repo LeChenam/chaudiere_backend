@@ -134,6 +134,10 @@ class Collection implements CollectionInterface
         return $eventsbyperiode->toArray();
     }
 
+    /**
+     * @throws EntityNotFoundException
+     * @throws ExceptionInterne
+     */
     public function getEvenementsRanges(string $rangement): array
     {
         switch ($rangement){
