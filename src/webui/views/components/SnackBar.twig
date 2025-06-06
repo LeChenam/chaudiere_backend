@@ -1,0 +1,27 @@
+{% if flash.success is defined %}
+    {% for message in flash.success %}
+        <div
+                id="flash-message"
+                class="fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-500"
+        >
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const flash = document.getElementById('flash-message');
+        if (flash) {
+            // Attendre 4 secondes, puis ajouter une classe d’opacité
+            setTimeout(() => {
+                flash.classList.add('opacity-0');
+            }, 4000);
+
+            // Supprimer complètement du DOM après l’animation
+            setTimeout(() => {
+                flash.remove();
+            }, 5000);
+        }
+    });
+</script>

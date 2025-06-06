@@ -49,9 +49,12 @@ class CreationEventAction{
 
             $categories = $this->categorie->getCategories();
             $view = Twig::fromRequest($request);
+            $globals = $view->getEnvironment()->getGlobals();
+            $flash = $globals['flash'];
+            $messages = $flash->getMessages();
+
             return $view->render($response, $this->template,
-                ['categories'=> $categories
-                , 'csrf_token' => $csrfToken]);
+                ['categories'=> $categories, 'csrf_token' => $csrfToken, 'flash' => $messages]);
         }
         else if($request->getMethod() == 'POST') {
 
@@ -72,13 +75,12 @@ class CreationEventAction{
             }
 
             $parseBody = $request->getParsedBody();
+            $twig = Twig::fromRequest($request);
+            $globals = $twig->getEnvironment()->getGlobals();
             $image = $request->getUploadedFiles()['image'] ?? null;
             if ($image instanceof UploadedFileInterface && $image->getError() === UPLOAD_ERR_OK) {
                 $originalName = pathinfo($image->getClientFilename(), PATHINFO_BASENAME);
                 $filename = uniqid() . '_' . preg_replace('/[^a-zA-Z0-9_.-]/', '_', $originalName);
-
-                $twig = Twig::fromRequest($request);
-                $globals = $twig->getEnvironment()->getGlobals();
 
                 $destination = $globals['globals']['img_dir'] ."/". $filename;
                 $image->moveTo($destination);
@@ -98,12 +100,16 @@ class CreationEventAction{
                     $parseBody['categorie'],
                     $user['id']
                 );
+
+                $flash = $globals['flash'];
+
+                $flash->addMessage('success', "L'évènement a été créé avec succès.");
                 return $response->withHeader('Location', 'createEvent')->withStatus(302);
             } catch (ExceptionInterne $e) {
                 throw new HttpInternalServerErrorException($request, $e);
             } catch (EntityNotFoundException $e) {
                 throw new HttpNotFoundException($request, "Catégorie ou créateur introuvable.");
             }
-        }else return $response->withStatus(405);
+        }
     }
 }

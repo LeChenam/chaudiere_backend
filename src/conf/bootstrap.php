@@ -5,6 +5,7 @@ session_start();
 use chaudiere\webui\middleware\TwigGlobalUserMiddleware;
 use Slim\Factory\AppFactory;
 use chaudiere\infrastructure\Eloquent;
+use Slim\Flash\Messages;
 use Slim\Views\TwigMiddleware;
 
 Eloquent::init(__DIR__ . '/db.conf.ini.dist');
@@ -21,6 +22,9 @@ $twig->getEnvironment()
             'img_dir'=> 'static/images',
         ]
     );
+
+$flash = new Messages();
+$twig->getEnvironment()->addGlobal('flash', $flash);
 
 $app->add(new TwigGlobalUserMiddleware($twig));
 $app->add(TwigMiddleware::create($app, $twig));

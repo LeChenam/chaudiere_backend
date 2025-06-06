@@ -1,7 +1,6 @@
 <?php
 namespace chaudiere\webui\actions;
 
-use chaudiere\core\domain\entities\Categorie;
 use chaudiere\core\application\usecases\CategorieManagement;
 use chaudiere\webui\exceptions\ProviderAuthentificationException;
 use chaudiere\webui\providers\AuthProviderInterface;
@@ -9,11 +8,10 @@ use chaudiere\webui\providers\SessionAuthProvider;
 use chaudiere\webui\providers\SessionCsrfTokenProvider;
 use chaudiere\webui\providers\CsrfTokenProviderInterface;
 use chaudiere\webui\exceptions\CsrfException;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use http\Exception\InvalidArgumentException;
 use Slim\Exception\HttpBadRequestException;
-use Exception;
 use Slim\Exception\HttpUnauthorizedException;
 use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
@@ -42,8 +40,12 @@ class CreationCategorieAction{
             }
 
             $view = Twig::fromRequest($request);
+            $globals = $view->getEnvironment()->getGlobals();
+            $flash = $globals['flash'];
+            $messages = $flash->getMessages();
+
             $csrfToken = $this->csrfTokenProvider->generateCsrf();
-            return $view->render($response, $this->template, ['csrf_token' => $csrfToken]);
+            return $view->render($response, $this->template, ['csrf_token' => $csrfToken, 'flash' => $messages]);
         } elseif ($request->getMethod() == 'POST') {
             $queryParam = $request->getParsedBody();
             $csrfToken = $queryParam['csrf_token'] ?? null;
@@ -55,20 +57,24 @@ class CreationCategorieAction{
             }
 
             try{
-                $nom = $queryParam['nom'] ?? '';
+                $nom = $queryParam['libelle'] ?? '';
                 $description = $queryParam['description'] ?? '';
                 if (empty($nom) || empty($description)) {
                     throw new InvalidArgumentException("Le nom et la description sont obligatoires.");
                 }
                 $this->categorieManagement->createCategorie($nom, $description);
-            } catch (Exception $e) {
-                return $response->withStatus(500)->write('Error: ' . $e->getMessage());
+            } catch (\Exception $e) {
+                throw new HttpBadRequestException($request, $e);
             }
 
-            $request = $request->withAttribute('flash_message', 'Box créée avec succès !');
+            $view = Twig::fromRequest($request);
+            $globals = $view->getEnvironment()->getGlobals();
+            $flash = $globals['flash'];
+
+            $flash->addMessage('success', 'La catégorie a été créée avec succès.');
 
             $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-            return $response->withHeader('Location', $routeParser->urlFor('home'))->withStatus(302);
+            return $response->withHeader('Location', $routeParser->urlFor('createCategorie'))->withStatus(302);
         } else {
             return $response->withStatus(405);
         }
