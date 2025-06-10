@@ -1,6 +1,7 @@
 <?php
 namespace chaudiere\api\actions;
 
+use Carbon\Traits\ToStringFormat;
 use chaudiere\core\application\exceptions\ExceptionInterne;
 use chaudiere\core\application\usecases\Collection;
 use chaudiere\core\application\usecases\CollectionInterface;
@@ -34,6 +35,11 @@ class EvenementsAction {
                         throw new HttpBadRequestException($request, $e->getMessage());
                     }
 
+                    for ($i = 0; $i < count($evenements); $i++){
+                        $link = '/api/evenements/'.$evenements[$i]['id'] ;
+                        $evenements[$i]['links'] = ['self' => ['href' => $link]];
+                    }
+
                     //Transformation des données
                     $data = [ 'type' => 'collection',
                         'count' => count($evenements),
@@ -46,6 +52,11 @@ class EvenementsAction {
                         throw new HttpNotFoundException($request, $e->getMessage());
                     } catch (ExceptionInterne $e) {
                         throw new HttpBadRequestException($request, $e->getMessage());
+                    }
+
+                    for ($i = 0; $i < count($evenements); $i++){
+                        $link = '/api/evenements/'.$evenements[$i]['id'] ;
+                        $evenements[$i]['links'] = ['self' => ['href' => $link]];
                     }
 
                     //Transformation des données
@@ -80,6 +91,9 @@ class EvenementsAction {
                 } catch (ExceptionInterne $e) {
                     throw new HttpInternalServerErrorException($request, $e->getMessage());
                 }
+            }
+
+                $evenements[$i]['links'] = ['self' => ['href' => $link]];
             }
 
             //Transformation des données
