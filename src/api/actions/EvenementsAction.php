@@ -9,6 +9,8 @@ use chaudiere\core\domain\exceptions\EntityNotFoundException;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpNotFoundException;
+use Slim\Routing\RouteContext;
+use Slim\Views\Twig;
 
 class EvenementsAction {
 
@@ -27,24 +29,13 @@ class EvenementsAction {
             if ($id == null) {
                 if ($rangement == null){
                     try {
-
-                            $evenements = $this->collection->getEvenements();
+                        $evenements = $this->collection->getEvenements();
                     } catch (EntityNotFoundException $e) {
                         throw new HttpNotFoundException($request, $e->getMessage());
                     } catch (ExceptionInterne $e) {
                         throw new HttpBadRequestException($request, $e->getMessage());
                     }
 
-                    for ($i = 0; $i < count($evenements); $i++){
-                        $link = '/api/evenements/'.$evenements[$i]['id'] ;
-                        $evenements[$i]['links'] = ['self' => ['href' => $link]];
-                    }
-
-                    //Transformation des données
-                    $data = [ 'type' => 'collection',
-                        'count' => count($evenements),
-                        'evenements' => $evenements ];
-                    $response->getBody()->write(json_encode($data));
                 } else{
                     try {
                         $evenements = $this->collection->getEvenementsRanges($rangement);
@@ -54,17 +45,16 @@ class EvenementsAction {
                         throw new HttpBadRequestException($request, $e->getMessage());
                     }
 
-                    for ($i = 0; $i < count($evenements); $i++){
-                        $link = '/api/evenements/'.$evenements[$i]['id'] ;
-                        $evenements[$i]['links'] = ['self' => ['href' => $link]];
-                    }
+                }
 
-                    //Transformation des données
-                    $data = [ 'type' => 'collection',
-                        'count' => count($evenements),
-                        'evenements' => $evenements ];
-                    $response->getBody()->write(json_encode($data));
-                    }
+                $evenements = $this->generateEventLinks($evenements, $request);
+
+                //Transformation des données
+                $data = [ 'type' => 'collection',
+                    'periode' => $periode,
+                    'count' => count($evenements),
+                    'evenement' => $evenements ];
+                $response->getBody()->write(json_encode($data));
 
             } else{
                 //On tente de récupérer les catégories depuis le modèle
@@ -72,7 +62,16 @@ class EvenementsAction {
                     $evenement = $this->collection->getEvenementById($id);
                 } catch (EntityNotFoundException $e) {
                     throw new HttpNotFoundException($request, $e->getMessage());
+                } catch (ExceptionInterne $e) {
+                    throw new HttpInternalServerErrorException($request, $e->getMessage());
                 }
+
+                $twig = Twig::fromRequest($request);
+                $globals = $twig->getEnvironment()->getGlobals();
+                $img_dir = $globals['globals']['img_dir'];
+
+                //On ajoute le lien de l'image
+                $evenement['image'] = ['href' => $img_dir . '/' . $evenement['image']];
 
                 //Transformation des données
                 $data = [ 'type' => 'ressource',
@@ -93,10 +92,7 @@ class EvenementsAction {
                 }
             }
 
-            for ($i = 0; $i < count($evenements); $i++){
-                $link = '/api/evenements/'.$evenements[$i]['id'] ;
-                $evenements[$i]['links'] = ['self' => ['href' => $link]];
-            }
+            $evenements = $this->generateEventLinks($evenements, $request);
 
             //Transformation des données
             $data = [ 'type' => 'collection',
@@ -110,5 +106,18 @@ class EvenementsAction {
         return
             $response->withHeader('Content-Type','application/json')
                 ->withStatus(200);
+    }
+
+    private function generateEventLinks(array $evenements, $request): array
+    {
+
+        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+
+        for ($i = 0; $i < count($evenements); $i++) {
+            $link = $routeParser->urlFor('api_events', ['id' => $evenements[$i]['id']]);
+            $evenements[$i]['links'] = ['self' => ['href' => $link]];
+        }
+
+        return $evenements;
     }
 }
