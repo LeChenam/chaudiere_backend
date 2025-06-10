@@ -90,10 +90,17 @@ class Collection implements CollectionInterface
         return $evenements->toArray();
     }
 
+    /**
+     * @throws ExceptionInterne
+     * @throws EntityNotFoundException
+     */
     public function getCreatedEvenements(): array
     {
         try {
             $evenements = Evenement::all();
+            foreach ($evenements as $evenement) {
+                $evenement->category = $evenement->categorie->libelle; // Assure-toi que le champ s'appelle 'nom'
+            }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             throw new EntityNotFoundException("Table Prestation introuvable");
         } catch (QueryException $e) {

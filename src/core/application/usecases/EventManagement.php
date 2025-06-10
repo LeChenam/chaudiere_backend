@@ -52,4 +52,21 @@ class EventManagement implements EventManagementInterface
             throw new ExceptionInterne("Erreur lors de la création de l'événement : " . $e->getMessage());
         }
     }
+
+    /**
+     * @throws ExceptionInterne
+     * @throws EntityNotFoundException
+     */
+    public function publishEvent(int $eventId): void
+    {
+        try {
+            $event = Evenement::findOrFail($eventId);
+            $event->publie = true;
+            $event->save();
+        } catch (ModelNotFoundException $e) {
+            throw new EntityNotFoundException("Événement introuvable");
+        } catch (\Exception $e) {
+            throw new ExceptionInterne("Erreur lors de la publication de l'événement : " . $e->getMessage());
+        }
+    }
 }

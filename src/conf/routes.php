@@ -8,6 +8,7 @@ use chaudiere\webui\actions\GetEventAction;
 use chaudiere\webui\actions\HomePageAction;
 use chaudiere\webui\actions\LoginAction;
 use chaudiere\webui\actions\LogoutAction;
+use chaudiere\webui\actions\PublishEventAction;
 use chaudiere\webui\actions\RegisterAction;
 
 return function (Slim\App $app) {
@@ -31,6 +32,8 @@ return function (Slim\App $app) {
     $app->get('/events[/]', GetEventAction::class)->setName('events');
 
     $app->map(['GET', 'POST'], '/createEvent', CreationEventAction::class)->setName('createEvent');
+
+    $app->post('/publishEvent[/]', PublishEventAction::class)->setName('publishEvent');
 
     $app->map(['GET', 'POST'], '/createCategorie', CreationCategorieAction::class)->setName('createCategorie');
 
