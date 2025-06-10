@@ -32,6 +32,11 @@ class EventsByCategorieAction {
                         throw new HttpNotFoundException($request, $e->getMessage());
                     }
 
+                    for ($i = 0; $i < count($evenements); $i++){
+                        $link = '/api/evenements/'.$evenements[$i]['id'] ;
+                        $evenements[$i]['links'] = ['self' => ['href' => $link]];
+                    }
+
                     //Transformation des données
                     $data = [ 'type' => 'collection',
                         'categorie' => $categorie,
@@ -45,6 +50,11 @@ class EventsByCategorieAction {
                         $categorie = $this->collection->getCategorieById($id);
                     } catch (EntityNotFoundException $e) {
                         throw new HttpNotFoundException($request, $e->getMessage());
+                    }
+
+                    for ($i = 0; $i < count($evenements); $i++){
+                        $link = '/api/evenements/'.$evenements[$i]['id'] ;
+                        $evenements[$i]['links'] = ['self' => ['href' => $link]];
                     }
 
                     //Transformation des données
@@ -66,6 +76,11 @@ class EventsByCategorieAction {
                     $categorie = $this->collection->getCategorieById($id);
                 } catch (EntityNotFoundException $e) {
                     throw new HttpNotFoundException($request, $e->getMessage());
+                }
+
+                for ($i = 0; $i < count($evenements); $i++){
+                    $link = '/api/evenements/'.$evenements[$i]['id'] ;
+                    $evenements[$i]['links'] = ['self' => ['href' => $link]];
                 }
 
                 //Transformation des données
