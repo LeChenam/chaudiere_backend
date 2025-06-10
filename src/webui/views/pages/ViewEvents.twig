@@ -1,0 +1,149 @@
+{% extends 'Base.twig' %}
+
+{% block content %}
+    <h1 class="text-4xl font-bold text-center pb-6">Les événements</h1>
+
+    <!-- Sélecteur de catégorie -->
+    <div class="flex justify-center mb-6">
+        <div class="flex items-center space-x-3 bg-white border border-gray-300 rounded-xl px-4 py-3 shadow-sm">
+            <label for="categoryFilter" class="text-gray-700 font-semibold whitespace-nowrap">
+                Filtrer par catégorie :
+            </label>
+            <select id="categoryFilter" class="bg-white border border-gray-300 text-gray-800 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="" selected>-- Toutes --</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.libelle }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+
+    <!-- Sélecteur de mois -->
+    <div class="flex justify-center mb-6">
+        <button onclick="changeMonth(-1)" class="px-4 py-2 bg-gray-200 rounded-l">←</button>
+        <div id="monthLabel" class="px-6 py-2 bg-gray-100 font-bold"></div>
+        <button onclick="changeMonth(1)" class="px-4 py-2 bg-gray-200 rounded-r">→</button>
+    </div>
+
+    <!-- Calendrier -->
+    <div id="calendar" class="grid grid-cols-7 gap-2 max-w-5xl mx-auto">
+        <!-- JS injecte ici -->
+    </div>
+
+    <!-- Drawer -->
+    <div id="drawer" class="fixed right-0 top-0 h-full w-96 bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out z-50">
+        <div class="p-6 space-y-4">
+            <h2 id="drawerTitle" class="text-2xl font-bold"></h2>
+            <p id="drawerCategorie" class="text-sm text-gray-500"></p>
+            <p id="drawerDates" class="text-sm text-gray-500"></p>
+            <form method="POST" action="{{ url_for('publishEvent') }}" class="mt-4" id="publishForm">
+                <input type="hidden" name="event_id" id="event_id">
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    Publier l'événement
+                </button>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            </form>
+            <button onclick="closeDrawer()" class="absolute top-4 right-4 text-gray-500 hover:text-black">
+                ✕
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        const allEvents = {{ events|json_encode|raw }};
+        let currentMonth = new Date();
+
+        const monthLabel = document.getElementById('monthLabel');
+        const calendar = document.getElementById('calendar');
+
+        let selectedCategoryId = null;
+
+        document.getElementById('categoryFilter').addEventListener('change', function () {
+            selectedCategoryId = this.value || null;
+            renderCalendar();
+        });
+
+        function renderCalendar() {
+            calendar.innerHTML = '';
+            const year = currentMonth.getFullYear();
+            const month = currentMonth.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - ((firstDay.getDay() + 6) % 7)); // Commence le lundi
+
+            monthLabel.textContent = currentMonth.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+
+            for (let i = 0; i < 42; i++) {
+                const day = new Date(startDate);
+                day.setDate(startDate.getDate() + i);
+                const isoDate = `${day.getFullYear()}-${String(day.getMonth()+1).padStart(2,'0')}-${String(day.getDate()).padStart(2,'0')}`;
+
+                // On récupère TOUS les événements du jour et on les filtre par catégorie
+                const eventsForDay = allEvents.filter(e => {
+                    const matchCategory = !selectedCategoryId || String(e.categorie_id) === String(selectedCategoryId);
+
+                    if (!matchCategory) return false;
+
+                    if (!e.date_fin) {
+                        return e.date_debut === isoDate;
+                    }
+                    return e.date_debut <= isoDate && isoDate <= e.date_fin;
+                });
+
+                const cell = document.createElement('div');
+                cell.className = 'border h-28 p-1 rounded-md text-sm relative hover:bg-blue-50 overflow-y-auto hide-scrollbar';
+
+                cell.innerHTML = `<div class="font-semibold mb-1">${day.getDate()}</div>`;
+
+                eventsForDay.forEach(event => {
+                    const el = document.createElement('div');
+                    if(event.publie){
+                        el.className = 'text-xs bg-green-500 text-white px-1 py-0.5 rounded mb-1 cursor-pointer truncate hover:bg-green-600';
+                    }else{
+                        el.className = 'text-xs bg-red-300 text-gray-700 px-1 py-0.5 rounded mb-1 cursor-pointer truncate hover:bg-red-400';
+                    }
+                    el.textContent = event.titre;
+                    el.onclick = () => openDrawer(event);
+                    cell.appendChild(el);
+                });
+
+                calendar.appendChild(cell);
+            }
+        }
+
+        function changeMonth(offset) {
+            currentMonth.setMonth(currentMonth.getMonth() + offset);
+            renderCalendar();
+        }
+
+        function openDrawer(event) {
+            document.getElementById('drawerTitle').textContent = event.titre;
+            document.getElementById('drawerCategorie').textContent = 'Catégorie : ' + event.category;
+            document.getElementById('drawerDates').textContent = 'Du ' + event.date_debut + (event.date_fin ? ' au ' + event.date_fin : ' au ' + event.date_debut);
+            document.getElementById('event_id').value = event.id;
+            document.getElementById('drawer').classList.remove('translate-x-full');
+            if(event.publie){
+                document.getElementById('publishForm').classList.add('hidden');
+            }else{
+                document.getElementById('publishForm').classList.remove('hidden');
+            }
+        }
+
+        function closeDrawer() {
+            document.getElementById('drawer').classList.add('translate-x-full');
+        }
+
+        renderCalendar();
+    </script>
+
+    <style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+{% endblock %}
