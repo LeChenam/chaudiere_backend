@@ -81,7 +81,6 @@ class EvenementsAction {
                     throw new HttpInternalServerErrorException($request, $e->getMessage());
                 }
             }
-            
 
             //Transformation des données
             $data = [ 'type' => 'collection',

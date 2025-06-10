@@ -5,7 +5,6 @@ use \Illuminate\Database\QueryException;
 use chaudiere\core\application\exceptions\ExceptionInterne;
 use chaudiere\core\domain\entities\Categorie;
 use chaudiere\core\domain\entities\Evenement;
-use chaudiere\core\application\usecases\CollectionInterface;
 use chaudiere\core\domain\exceptions\EntityNotFoundException;
 
 class Collection implements CollectionInterface
@@ -244,6 +243,47 @@ class Collection implements CollectionInterface
             throw new ExceptionInterne("Erreur de requête : Mauvaise requête");
         }
         
+        return $evenementsranges->toArray();
+    }
+
+    /**
+     * @throws ExceptionInterne
+     * @throws EntityNotFoundException
+     */
+    public function getSortedEventsByCategorie(int $categ_id, string $rangement): array
+    {
+        switch ($rangement){
+            case "date-asc":
+                try {
+                    $evenementsranges = Evenement::where("categorie_id","=",$categ_id)->orderBy('date_debut', 'asc')->get(["titre", "date_debut","categorie_id"]);
+                } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    throw new EntityNotFoundException("Table Evenement introuvable");
+                } catch (QueryException $e) {
+                    throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
+                }
+                break;
+            case "date-desc":
+                try {
+                    $evenementsranges = Evenement::where("categorie_id","=",$categ_id)->orderBy('date_debut', 'desc')->get(["titre", "date_debut","categorie_id"]);
+                } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    throw new EntityNotFoundException("Table Evenement introuvable");
+                } catch (QueryException $e) {
+                    throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
+                }
+                break;
+            case "titre":
+                try {
+                    $evenementsranges = Evenement::where("categorie_id","=",$categ_id)->orderBy('titre', 'asc')->get(["titre", "date_debut","categorie_id"]);
+                } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    throw new EntityNotFoundException("Table Evenement introuvable");
+                } catch (QueryException $e) {
+                    throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
+                }
+                break;
+            default:
+                throw new ExceptionInterne("Erreur de requête : Mauvaise requête");
+        }
+
         return $evenementsranges->toArray();
     }
 }
