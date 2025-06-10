@@ -33,6 +33,8 @@ return function (Slim\App $app) {
 
     $app->get('/events[/]', GetEventAction::class)->setName('events');
 
+    $app->get('/events[/]', GetEventAction::class)->setName('events');
+
     $app->map(['GET', 'POST'], '/createEvent', CreationEventAction::class)->setName('createEvent');
 
     $app->map(['GET', 'POST'], '/createCategorie', CreationCategorieAction::class)->setName('createCategorie');
