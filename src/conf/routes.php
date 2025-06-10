@@ -2,12 +2,13 @@
 use chaudiere\api\actions\CategoriesAction;
 use chaudiere\api\actions\EvenementsAction;
 use chaudiere\api\actions\EventsByCategorieAction;
-use chaudiere\api\actions\EventsByPeriodeAction;
 use chaudiere\webui\actions\CreationEventAction;
 use chaudiere\webui\actions\CreationCategorieAction;
+use chaudiere\webui\actions\GetEventAction;
 use chaudiere\webui\actions\HomePageAction;
 use chaudiere\webui\actions\LoginAction;
 use chaudiere\webui\actions\LogoutAction;
+use chaudiere\webui\actions\PublishEventAction;
 use chaudiere\webui\actions\RegisterAction;
 
 return function (Slim\App $app) {
@@ -28,7 +29,11 @@ return function (Slim\App $app) {
     // API de toutes les catégories avec option d'en chercher une par id
     $app->get('/api/categories/{id}/evenements[/]', EventsByCategorieAction::class)->setName('api_events_by_categories');
 
+    $app->get('/events[/]', GetEventAction::class)->setName('events');
+
     $app->map(['GET', 'POST'], '/createEvent', CreationEventAction::class)->setName('createEvent');
+
+    $app->post('/publishEvent[/]', PublishEventAction::class)->setName('publishEvent');
 
     $app->map(['GET', 'POST'], '/createCategorie', CreationCategorieAction::class)->setName('createCategorie');
 

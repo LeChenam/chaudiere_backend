@@ -26,7 +26,8 @@ class EvenementsAction {
             if ($id == null) {
                 if ($rangement == null){
                     try {
-                        $evenements = $this->collection->getEvenements();
+
+                            $evenements = $this->collection->getEvenements();
                     } catch (EntityNotFoundException $e) {
                         throw new HttpNotFoundException($request, $e->getMessage());
                     } catch (ExceptionInterne $e) {
@@ -64,7 +65,7 @@ class EvenementsAction {
 
                 //Transformation des données
                 $data = [ 'type' => 'ressource',
-                    'evenement' => $evenement ];
+                    'evenement' => $evenement];
                 $response->getBody()->write(json_encode($data));
             }
         } else{
@@ -80,7 +81,6 @@ class EvenementsAction {
                     throw new HttpInternalServerErrorException($request, $e->getMessage());
                 }
             }
-            
 
             //Transformation des données
             $data = [ 'type' => 'collection',

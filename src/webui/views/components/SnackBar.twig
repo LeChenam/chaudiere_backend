@@ -8,7 +8,7 @@
     {% for message in messages %}
         <div
                 id="flash-message"
-                class="fixed bottom-4 right-4 {{ classes[type]|default('bg-gray-700') }} text-white px-4 py-2 rounded shadow-lg transition-opacity duration-500"
+                class="fixed bottom-4 right-4 z-50 {{ classes[type]|default('bg-gray-700') }} text-white px-4 py-2 rounded shadow-lg transition-opacity duration-500"
         >
             {{ message }}
         </div>
