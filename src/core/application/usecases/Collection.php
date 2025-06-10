@@ -48,7 +48,9 @@ class Collection implements CollectionInterface
     public function getEvenementById(string $id): array
     {
         try {
-            $prestation = Evenement::find($id)->where('publie', true)->firstOrFail();
+            $prestation = Evenement::where('id', $id)
+                ->where('publie', true)
+                ->firstOrFail(['id', 'titre', 'description_md', 'tarif', 'date_debut', 'date_fin', 'horaire', 'image', 'categorie_id']);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             throw new EntityNotFoundException("Prestation $id introuvable");
         } catch (QueryException $e) {
