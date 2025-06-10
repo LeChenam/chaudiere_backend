@@ -93,6 +93,8 @@ class EvenementsAction {
                 }
             }
 
+            for ($i = 0; $i < count($evenements); $i++){
+                $link = '/api/evenements/'.$evenements[$i]['id'] ;
                 $evenements[$i]['links'] = ['self' => ['href' => $link]];
             }
 
