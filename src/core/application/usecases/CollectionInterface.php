@@ -7,6 +7,7 @@ Interface CollectionInterface{
     public function getEvenementById(string $id): array;
     public function getEvenementsByCategorie(int $categ_id): array;
     public function getEvenements(): array;
+    public function getCreatedEvenements(): array;
     public function getEvenementsByPeriode(string $periode): array;
     public function getEvenementsRanges(string $rangement): array;
 }
