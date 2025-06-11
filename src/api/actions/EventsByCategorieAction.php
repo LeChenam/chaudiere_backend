@@ -1,16 +1,24 @@
 <?php
 namespace chaudiere\api\actions;
 
+use chaudiere\api\providers\EventsLinksProvider;
+use chaudiere\api\providers\EventsLinksProviderInterface;
+use chaudiere\core\application\exceptions\ExceptionInterne;
 use chaudiere\core\application\usecases\Collection;
 use chaudiere\core\application\usecases\CollectionInterface;
 use chaudiere\core\domain\exceptions\EntityNotFoundException;
+use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpNotFoundException;
 
 class EventsByCategorieAction {
 
     private CollectionInterface $collection;
+    private EventsLinksProviderInterface $eventsLinksProvider;
+
     public function __construct() {
         $this->collection = new Collection();
+        $this->eventsLinksProvider = new EventsLinksProvider();
     }
 
     public function __invoke($request, $response, $args){
@@ -20,7 +28,7 @@ class EventsByCategorieAction {
         $rangement = $queryParams['sort'] ?? null;
 
         if ($id == null) {
-            throw new \Slim\Exception\HttpBadRequestException($request, "Paramètre manquant");
+            throw new HttpBadRequestException($request, "Paramètre manquant");
         } else{
             if ($periode == null){
                 if ($rangement == null){
@@ -30,12 +38,11 @@ class EventsByCategorieAction {
                         $categorie = $this->collection->getCategorieById($id);
                     } catch (EntityNotFoundException $e) {
                         throw new HttpNotFoundException($request, $e->getMessage());
+                    } catch (ExceptionInterne $e) {
+                        throw new HttpInternalServerErrorException($request, $e->getMessage());
                     }
 
-                    for ($i = 0; $i < count($evenements); $i++){
-                        $link = '/api/evenements/'.$evenements[$i]['id'] ;
-                        $evenements[$i]['links'] = ['self' => ['href' => $link]];
-                    }
+                    $evenements = $this->eventsLinksProvider->generateEventLinks($evenements, $request);
 
                     //Transformation des données
                     $data = [ 'type' => 'collection',
@@ -50,12 +57,11 @@ class EventsByCategorieAction {
                         $categorie = $this->collection->getCategorieById($id);
                     } catch (EntityNotFoundException $e) {
                         throw new HttpNotFoundException($request, $e->getMessage());
+                    } catch (ExceptionInterne $e) {
+                        throw new HttpInternalServerErrorException($request, $e->getMessage());
                     }
 
-                    for ($i = 0; $i < count($evenements); $i++){
-                        $link = '/api/evenements/'.$evenements[$i]['id'] ;
-                        $evenements[$i]['links'] = ['self' => ['href' => $link]];
-                    }
+                    $evenements = $this->eventsLinksProvider->generateEventLinks($evenements, $request);
 
                     //Transformation des données
                     $data = [ 'type' => 'collection',
@@ -78,10 +84,7 @@ class EventsByCategorieAction {
                     throw new HttpNotFoundException($request, $e->getMessage());
                 }
 
-                for ($i = 0; $i < count($evenements); $i++){
-                    $link = '/api/evenements/'.$evenements[$i]['id'] ;
-                    $evenements[$i]['links'] = ['self' => ['href' => $link]];
-                }
+                $evenements = $this->eventsLinksProvider->generateEventLinks($evenements, $request);
 
                 //Transformation des données
                 $data = [ 'type' => 'collection',
@@ -98,4 +101,5 @@ class EventsByCategorieAction {
             $response->withHeader('Content-Type','application/json')
                 ->withStatus(200);
     }
+
 }

@@ -1,7 +1,8 @@
 <?php
 namespace chaudiere\api\actions;
 
-use Carbon\Traits\ToStringFormat;
+use chaudiere\api\providers\EventsLinksProvider;
+use chaudiere\api\providers\EventsLinksProviderInterface;
 use chaudiere\core\application\exceptions\ExceptionInterne;
 use chaudiere\core\application\usecases\Collection;
 use chaudiere\core\application\usecases\CollectionInterface;
@@ -9,14 +10,15 @@ use chaudiere\core\domain\exceptions\EntityNotFoundException;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpNotFoundException;
-use Slim\Routing\RouteContext;
-use Slim\Views\Twig;
 
 class EvenementsAction {
 
     private CollectionInterface $collection;
+    private EventsLinksProviderInterface $eventsLinksProvider;
+
     public function __construct() {
         $this->collection = new Collection();
+        $this->eventsLinksProvider = new EventsLinksProvider();
     }
 
     public function __invoke($request, $response, $args){
@@ -47,7 +49,7 @@ class EvenementsAction {
 
                 }
 
-                $evenements = $this->generateEventLinks($evenements, $request);
+                $evenements = $this->eventsLinksProvider->generateEventLinks($evenements, $request);
 
                 //Transformation des données
                 $data = [ 'type' => 'collection',
@@ -66,12 +68,7 @@ class EvenementsAction {
                     throw new HttpInternalServerErrorException($request, $e->getMessage());
                 }
 
-                $twig = Twig::fromRequest($request);
-                $globals = $twig->getEnvironment()->getGlobals();
-                $img_dir = $globals['globals']['img_dir'];
-
-                //On ajoute le lien de l'image
-                $evenement['image'] = ['href' => $img_dir . '/' . $evenement['image']];
+                $evenement = $this->eventsLinksProvider->generateEventImageLinks($evenement, $request);
 
                 //Transformation des données
                 $data = [ 'type' => 'ressource',
@@ -92,7 +89,7 @@ class EvenementsAction {
                 }
             }
 
-            $evenements = $this->generateEventLinks($evenements, $request);
+            $evenements = $this->eventsLinksProvider->generateEventLinks($evenements, $request);
 
             //Transformation des données
             $data = [ 'type' => 'collection',
@@ -106,18 +103,5 @@ class EvenementsAction {
         return
             $response->withHeader('Content-Type','application/json')
                 ->withStatus(200);
-    }
-
-    private function generateEventLinks(array $evenements, $request): array
-    {
-
-        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-
-        for ($i = 0; $i < count($evenements); $i++) {
-            $link = $routeParser->urlFor('api_events', ['id' => $evenements[$i]['id']]);
-            $evenements[$i]['links'] = ['self' => ['href' => $link]];
-        }
-
-        return $evenements;
     }
 }
