@@ -66,13 +66,14 @@ class Collection implements CollectionInterface
     public function getEvenementsByCategorie(int $categ_id): array
     {
         try {
-            $evenements = Evenement::where("categorie_id","=",$categ_id)->get(["id","titre", "date_debut","categorie_id"]);
+            $categorie = Categorie::findOrFail($categ_id);
+            $evenements = $categorie->evenements()->where('publie', true)->get(["id","titre", "date_debut","categorie_id"]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             throw new EntityNotFoundException("Categorie $categ_id introuvable");
         } catch (QueryException $e) {
             throw new ExceptionInterne("Erreur de requête : " . $e->getMessage());
         }
-        return $evenements->evenements->where('publie', true)->toArray();
+        return $evenements->toArray();
     }
 
     /**
