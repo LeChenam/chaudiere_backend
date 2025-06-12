@@ -16,6 +16,7 @@ services:
     command: bash -c "composer update && php -S 0.0.0.0:80 -t /var/www/html"
     depends_on:
       - mariadb
+    restart: unless-stopped
 
   adminer:
     image: adminer:5.2.1
@@ -37,3 +38,4 @@ services:
       chaudiere.net:
         aliases:
           - sql.db
+    restart: unless-stopped
