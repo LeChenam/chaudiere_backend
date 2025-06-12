@@ -28,7 +28,9 @@ class EventsLinksProvider implements EventsLinksProviderInterface
         $img_dir = $globals['globals']['img_dir'];
 
         //On ajoute le lien de l'image
-        $events['image'] = ['href' => $img_dir . $events['image']];
+        if(ISSET($events['image'])) {
+            $events['image'] = ['href' => $img_dir . $events['image']];
+        }
         return $events;
     }
 }
