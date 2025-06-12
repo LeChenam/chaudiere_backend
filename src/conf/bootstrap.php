@@ -28,8 +28,8 @@ $app->add(function ($request, $handler) {
 $twig = \Slim\Views\Twig::create(__DIR__ . '/../webui/views', ['cache' => false, 'auto_reload' => true , 'strict_variables' => true]);
 $twig->getEnvironment()
     ->addGlobal('globals', [
-            'css_dir'=> 'static/css',
-            'img_dir'=> 'static/images',
+            'css_dir'=> '/static/css/',
+            'img_dir'=> '/static/images/',
         ]
     );
 
