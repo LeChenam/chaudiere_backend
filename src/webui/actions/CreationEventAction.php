@@ -81,6 +81,7 @@ class CreationEventAction{
                 $filename = uniqid() . '_' . preg_replace('/[^a-zA-Z0-9_.-]/', '_', $originalName);
 
                 $destination = $globals['globals']['img_dir'] ."/". $filename;
+                $destination = ltrim($destination, '/');
                 $image->moveTo($destination);
             } else {
                 $filename = null;
