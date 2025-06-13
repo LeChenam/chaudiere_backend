@@ -1,17 +1,17 @@
 <?php
 namespace chaudiere\core\application\usecases;
 
-use \Illuminate\Database\QueryException;
+use chaudiere\core\application\exceptions\EntityNotFoundException;
 use chaudiere\core\application\exceptions\ExceptionInterne;
 use chaudiere\core\domain\entities\Categorie;
 use chaudiere\core\domain\entities\Evenement;
-use chaudiere\core\domain\exceptions\EntityNotFoundException;
+use Illuminate\Database\QueryException;
 
 class Collection implements CollectionInterface
 {
 
     /**
-     * @throws EntityNotFoundException
+     * @throws \chaudiere\core\application\exceptions\EntityNotFoundException
      * @throws ExceptionInterne
      */
     public function getCategories(): array{
@@ -26,7 +26,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * @throws EntityNotFoundException
+     * @throws \chaudiere\core\application\exceptions\EntityNotFoundException
      * @throws ExceptionInterne
      */
     public function getCategorieById(int $id): array
@@ -42,7 +42,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * @throws EntityNotFoundException
+     * @throws \chaudiere\core\application\exceptions\EntityNotFoundException
      * @throws ExceptionInterne
      */
     public function getEvenementById(string $id): array
@@ -77,7 +77,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * @throws EntityNotFoundException
+     * @throws \chaudiere\core\application\exceptions\EntityNotFoundException
      * @throws ExceptionInterne
      */
     public function getEvenements(): array
@@ -94,7 +94,7 @@ class Collection implements CollectionInterface
 
     /**
      * @throws ExceptionInterne
-     * @throws EntityNotFoundException
+     * @throws \chaudiere\core\application\exceptions\EntityNotFoundException
      */
     public function getCreatedEvenements(): array
     {
@@ -112,7 +112,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * @throws EntityNotFoundException
+     * @throws \chaudiere\core\application\exceptions\EntityNotFoundException
      * @throws ExceptionInterne
      */
     public function getEvenementsByPeriode(string $periode): array
@@ -156,7 +156,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * @throws EntityNotFoundException
+     * @throws \chaudiere\core\application\exceptions\EntityNotFoundException
      * @throws ExceptionInterne
      */
     public function getEventsByCategByPeriode(int $categ_id, string $periode): array
@@ -200,7 +200,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * @throws EntityNotFoundException
+     * @throws \chaudiere\core\application\exceptions\EntityNotFoundException
      * @throws ExceptionInterne
      */
     public function getEvenementsRanges(string $rangement): array
@@ -251,7 +251,7 @@ class Collection implements CollectionInterface
 
     /**
      * @throws ExceptionInterne
-     * @throws EntityNotFoundException
+     * @throws \chaudiere\core\application\exceptions\EntityNotFoundException
      */
     public function getSortedEventsByCategorie(int $categ_id, string $rangement): array
     {

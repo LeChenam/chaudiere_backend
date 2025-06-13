@@ -1,19 +1,15 @@
 <?php
 namespace chaudiere\webui\actions;
 
+use chaudiere\core\application\exceptions\EntityNotFoundException;
 use chaudiere\core\application\exceptions\ExceptionInterne;
 use chaudiere\core\application\usecases\Collection;
 use chaudiere\core\application\usecases\CollectionInterface;
-use chaudiere\core\application\usecases\EventManagement;
-use chaudiere\core\domain\entities\Categorie;
-use chaudiere\core\domain\entities\Evenement;
-use chaudiere\core\domain\exceptions\EntityNotFoundException;
 use chaudiere\webui\exceptions\ProviderAuthentificationException;
 use chaudiere\webui\providers\AuthProviderInterface;
 use chaudiere\webui\providers\CsrfTokenProviderInterface;
 use chaudiere\webui\providers\SessionAuthProvider;
 use chaudiere\webui\providers\SessionCsrfTokenProvider;
-use Illuminate\Support\Facades\Event;
 use Slim\Flash\Messages;
 use Slim\Routing\RouteContext;
 use Slim\Views\Twig;

@@ -2,13 +2,10 @@
 
 namespace chaudiere\core\application\usecases;
 
-use chaudiere\core\domain\entities\Categorie;
+use chaudiere\core\application\exceptions\EntityNotFoundException;
 use chaudiere\core\application\exceptions\ExceptionInterne;
-use chaudiere\core\domain\exceptions\EntityNotFoundException;
+use chaudiere\core\domain\entities\Categorie;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\QueryException;
-use Slim\Exception\HttpInternalServerErrorException;
-use Slim\Exception\HttpNotFoundException;
 
 class CategorieManagement implements CategorieManagementInterface{
 

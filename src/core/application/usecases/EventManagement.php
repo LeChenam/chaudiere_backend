@@ -3,11 +3,11 @@
 
 namespace chaudiere\core\application\usecases;
 
+use chaudiere\core\application\exceptions\EntityNotFoundException;
 use chaudiere\core\application\exceptions\ExceptionInterne;
 use chaudiere\core\domain\entities\Categorie;
 use chaudiere\core\domain\entities\Evenement;
 use chaudiere\core\domain\entities\User;
-use chaudiere\core\domain\exceptions\EntityNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class EventManagement implements EventManagementInterface
@@ -55,7 +55,7 @@ class EventManagement implements EventManagementInterface
 
     /**
      * @throws ExceptionInterne
-     * @throws EntityNotFoundException
+     * @throws \chaudiere\core\application\exceptions\EntityNotFoundException
      */
     public function publishEvent(int $eventId): void
     {

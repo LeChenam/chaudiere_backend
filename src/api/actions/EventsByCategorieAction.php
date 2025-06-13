@@ -3,10 +3,10 @@ namespace chaudiere\api\actions;
 
 use chaudiere\api\providers\EventsLinksProvider;
 use chaudiere\api\providers\EventsLinksProviderInterface;
+use chaudiere\core\application\exceptions\EntityNotFoundException;
 use chaudiere\core\application\exceptions\ExceptionInterne;
 use chaudiere\core\application\usecases\Collection;
 use chaudiere\core\application\usecases\CollectionInterface;
-use chaudiere\core\domain\exceptions\EntityNotFoundException;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpNotFoundException;

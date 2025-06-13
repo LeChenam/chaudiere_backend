@@ -1,11 +1,10 @@
 <?php
 
 namespace chaudiere\webui\actions;
+use chaudiere\core\application\exceptions\EntityNotFoundException;
 use chaudiere\core\application\exceptions\ExceptionInterne;
 use chaudiere\core\application\usecases\CategorieManagement;
 use chaudiere\core\application\usecases\EventManagement;
-use chaudiere\core\domain\entities\Categorie;
-use chaudiere\core\domain\exceptions\EntityNotFoundException;
 use chaudiere\webui\exceptions\CsrfException;
 use chaudiere\webui\exceptions\ProviderAuthentificationException;
 use chaudiere\webui\providers\AuthProviderInterface;

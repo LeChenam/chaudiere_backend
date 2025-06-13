@@ -1,9 +1,11 @@
 <?php
 namespace chaudiere\api\actions;
 
+use chaudiere\core\application\exceptions\EntityNotFoundException;
+use chaudiere\core\application\exceptions\ExceptionInterne;
 use chaudiere\core\application\usecases\Collection;
 use chaudiere\core\application\usecases\CollectionInterface;
-use chaudiere\core\domain\exceptions\EntityNotFoundException;
+use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpNotFoundException;
 
 class CategoriesAction {
@@ -21,6 +23,8 @@ class CategoriesAction {
                 $categories = $this->collection->getCategories();
             } catch (EntityNotFoundException $e) {
                 throw new HttpNotFoundException($request, $e->getMessage());
+            } catch (ExceptionInterne $e) {
+                throw new HttpInternalServerErrorException($request, $e->getMessage());
             }
 
             //Transformation des données
@@ -35,6 +39,8 @@ class CategoriesAction {
                 $categorie = $this->collection->getCategorieById($id);
             } catch (EntityNotFoundException $e) {
                 throw new HttpNotFoundException($request, $e->getMessage());
+            } catch (ExceptionInterne $e) {
+                throw new HttpInternalServerErrorException($request, $e->getMessage());
             }
 
             //Transformation des données

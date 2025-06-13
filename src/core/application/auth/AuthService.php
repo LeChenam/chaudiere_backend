@@ -3,9 +3,9 @@
 namespace chaudiere\core\application\auth;
 
 use chaudiere\core\application\exceptions\AuthentificationException;
+use chaudiere\core\application\exceptions\EntityNotFoundException;
 use chaudiere\core\application\exceptions\ExceptionInterne;
 use chaudiere\core\domain\entities\User;
-use chaudiere\core\domain\exceptions\EntityNotFoundException;
 use Ramsey\Uuid\Uuid;
 
 class AuthService implements AuthServiceInterface

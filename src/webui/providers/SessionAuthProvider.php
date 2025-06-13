@@ -5,8 +5,8 @@ namespace chaudiere\webui\providers;
 use chaudiere\core\application\auth\AuthService;
 use chaudiere\core\application\auth\AuthServiceInterface;
 use chaudiere\core\application\exceptions\AuthentificationException;
+use chaudiere\core\application\exceptions\EntityNotFoundException;
 use chaudiere\core\application\exceptions\ExceptionInterne;
-use chaudiere\core\domain\exceptions\EntityNotFoundException;
 use chaudiere\webui\exceptions\ProviderAuthentificationException;
 
 class SessionAuthProvider implements AuthProviderInterface
