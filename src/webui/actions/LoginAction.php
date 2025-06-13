@@ -65,7 +65,11 @@ class LoginAction
             }
 
         } else {
-            $token = $this->csrfTokenProvider->generateCsrf();
+            try {
+                $token = $this->csrfTokenProvider->generateCsrf();
+            } catch (CsrfException $e) {
+                throw new HttpInternalServerErrorException($request, "Erreur lors de la génération du token CSRF : " . $e->getMessage());
+            }
 
             // Afficher le formulaire
             $view = Twig::fromRequest($request);

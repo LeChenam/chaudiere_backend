@@ -5,6 +5,7 @@ use chaudiere\core\application\exceptions\EntityNotFoundException;
 use chaudiere\core\application\exceptions\ExceptionInterne;
 use chaudiere\core\application\usecases\Collection;
 use chaudiere\core\application\usecases\CollectionInterface;
+use chaudiere\webui\exceptions\CsrfException;
 use chaudiere\webui\exceptions\ProviderAuthentificationException;
 use chaudiere\webui\providers\AuthProviderInterface;
 use chaudiere\webui\providers\CsrfTokenProviderInterface;
@@ -58,7 +59,11 @@ class  GetEventAction
             throw new Slim\Exception\HttpNotFoundException($request, $e->getMessage());
         }
 
-        $csrfToken = $this->csrfTokenProvider->generateCsrf();
+        try {
+            $csrfToken = $this->csrfTokenProvider->generateCsrf();
+        } catch (CsrfException $e) {
+            throw new Slim\Exception\HttpInternalServerErrorException($request, "Erreur lors de la génération du token CSRF : " . $e->getMessage());
+        }
 
         $view = Twig::fromRequest($request);
         return $view->render($response, $this->template, ['events'=> $events, 'categories' => $categories, 'csrf_token' => $csrfToken]);

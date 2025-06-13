@@ -12,6 +12,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpUnauthorizedException;
 use Slim\Flash\Messages;
 use Slim\Routing\RouteContext;
@@ -42,7 +43,11 @@ class CreationCategorieAction{
 
             $view = Twig::fromRequest($request);
 
-            $csrfToken = $this->csrfTokenProvider->generateCsrf();
+            try {
+                $csrfToken = $this->csrfTokenProvider->generateCsrf();
+            } catch (CsrfException $e) {
+                throw new HttpInternalServerErrorException($request, "Erreur lors de la génération du token CSRF : " . $e->getMessage());
+            }
             return $view->render($response, $this->template, ['csrf_token' => $csrfToken]);
         } else {
             $queryParam = $request->getParsedBody();

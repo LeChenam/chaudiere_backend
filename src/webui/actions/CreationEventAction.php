@@ -46,7 +46,11 @@ class CreationEventAction{
             }
 
             // On récupère le token CSRF pour le formulaire
-            $csrfToken = $this->csrfTokenProvider->generateCsrf();
+            try {
+                $csrfToken = $this->csrfTokenProvider->generateCsrf();
+            } catch (CsrfException $e) {
+                throw new HttpInternalServerErrorException($request, "Erreur lors de la génération du token CSRF : " . $e->getMessage());
+            }
 
             $categories = $this->categorie->getCategories();
             $view = Twig::fromRequest($request);

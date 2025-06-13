@@ -14,6 +14,7 @@ use chaudiere\webui\providers\SessionAuthProvider;
 use chaudiere\webui\providers\SessionCsrfTokenProvider;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpForbiddenException;
+use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpUnauthorizedException;
 use Slim\Routing\RouteContext;
 
@@ -73,7 +74,11 @@ class RegisterAction
             $this->verifAuthz($request);
 
             // Générer un token CSRF
-            $token = $this->tokenProvider->generateCsrf();
+            try {
+                $token = $this->tokenProvider->generateCsrf();
+            } catch (CsrfException $e) {
+                throw new HttpInternalServerErrorException($request, "Erreur lors de la génération du token CSRF : " . $e->getMessage());
+            }
 
             // Afficher le formulaire d'inscription
             $view = \Slim\Views\Twig::fromRequest($request);

@@ -2,6 +2,7 @@
 namespace chaudiere\webui\providers;
 
 use chaudiere\webui\exceptions\CsrfException;
+use Random\RandomException;
 
 class SessionCsrfTokenProvider implements CsrfTokenProviderInterface{
 
@@ -12,9 +13,16 @@ class SessionCsrfTokenProvider implements CsrfTokenProviderInterface{
     }
 
 
+    /**
+     * @throws CsrfException
+     */
     public function generateCsrf(): string
     {
-        $token = md5(uniqid(mt_rand(), true));
+        try {
+            $token = bin2hex(random_bytes(32));
+        } catch (RandomException $e) {
+            throw new CsrfException("Erreur lors de la génération du token CSRF: " . $e->getMessage());
+        }
         $_SESSION[$this->sessionName] = $token;
         return $token;
     }
