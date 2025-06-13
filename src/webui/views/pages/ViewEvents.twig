@@ -131,8 +131,12 @@
                 document.getElementById('publishForm').classList.remove('hidden');
             }
             const imgDir = '{{ globals.img_dir }}';
-            document.getElementById('eventImg').src = (event.image ? imgDir + event.image : 'https://via.placeholder.com/64');
-            document.getElementById('eventImg').alt = event.titre || 'Image de l\'événement';
+            if(event.image !== null) {
+                document.getElementById('eventImg').src = (event.image ? imgDir + event.image : 'https://via.placeholder.com/64');
+                document.getElementById('eventImg').alt = event.titre || 'Image de l\'événement';
+            }else{
+                document.getElementById('eventImg').classList.add('hidden');
+            }
         }
 
         function closeDrawer() {
